@@ -1,0 +1,139 @@
+// cargo.toml
+[package]
+name = "nnet"
+version = "0.1.0"
+edition = "2021"
+authors = ["<NAME> <EMAIL>"]
+description = "Neural Network Library"
+repository = "https://github.com/alexander-krasnov/nn"
+license = "MIT"
+documentation = "https://docs.rs/nn"
+include = ["src/lib.rs"]
+
+
+crate-type = [ "cdylib", "rlib"]
+
+[dependencies]
+ndarray = "0.15.6"
+rand = "0.8"
+derive_more = { version = "0.99.18", features = ["display", "default"] }
+pyo3 = { version = ">=0.16.0", features = ["extension-module", "auto-initialize"] }
+numpy = { version = "0.18.0" }
+
+
+//layer.rs
+
+use numpy::{IntoPyArray, PyArrayDyn};
+use pyo3::{prelude::*, types::PyDict};
+
+use crate::random_array;
+
+use ndarray::{ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
+use pyo3::pyclass;
+
+pub type Ndarray = ArrayBase<OwnedRepr<f64>, Dim<IxDynImpl>>;
+pub type NDArray2 = ArrayBase<OwnedRepr<Vec<Vec<f64>>>, Dim<[usize; 2]>>;
+pub type Object = Py<PyArrayDyn<f64>>;
+
+#[derive(Debug)]
+#[pyclass(
+    name = "Linear",
+    unsendable,
+    subclass,
+    sequence,
+    dict,
+    get_all,
+    set_all
+)]
+#[pyo3(text_signature = "(in_features : u16 , out_features : u16,  is_bias: bool)")]
+pub struct Linear {
+    pub weights: Object,
+    pub bias: Object,
+    pub is_bias: bool,
+    shape: (u16, u16),
+}
+
+#[pymethods]
+impl Linear {
+    #[new]
+    #[pyo3(signature = (in_features , out_features, is_bias))]
+    pub fn new<'py>(in_features: u16, out_features: u16, is_bias: bool) -> PyResult<Self> {
+        Python::with_gil(|py| {
+            let random_weight: Ndarray = random_array(in_features.into(), out_features.into());
+            let random_bias: Ndarray = match is_bias {
+                true => random_array(out_features.into(), 1),
+                false => ArrayD::zeros(IxDyn(&[out_features.into(), 1])),
+            };
+            Ok(Self {
+                weights: random_weight.into_pyarray(py).to_owned(),
+                bias: random_bias.into_pyarray(py).to_owned(),
+                is_bias,
+                shape: (in_features, out_features),
+            })
+        })
+    }
+    #[pyo3(text_signature = "($cls )")]
+    pub fn parameters<'py>(&mut self) -> PyObject {
+        Python::with_gil(|py| {
+            let parameter = PyDict::new(py);
+            parameter
+                .set_item("weights", self.weights.as_ref(py))
+                .unwrap();
+            parameter.set_item("bias", self.bias.as_ref(py)).unwrap();
+            parameter.to_object(py)
+        })
+    }
+
+    fn __str__(&self) -> String {
+        format!(
+            "Linear(in = {},out = {}, params={}) ",
+            self.shape.0,
+            self.shape.1,
+            self.shape.0 * self.shape.1 + self.shape.1
+        )
+    }
+
+    fn __repr__(&self) {
+        self.__str__();
+    }
+}
+
+
+
+//lib.rs
+
+pub mod functions;
+pub mod layer;
+pub mod nn;
+
+use layer::Linear;
+use ndarray::{ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
+use numpy::PyArray;
+use pyo3::{pymodule, types::PyModule, Py, PyResult, Python};
+use rand::Rng;
+
+pub type Ndarray = ArrayBase<OwnedRepr<f64>, Dim<IxDynImpl>>;
+
+fn random_array(n: usize, m: usize) -> Ndarray {
+    let mut rng = rand::thread_rng();
+    let mut array = ArrayD::zeros(IxDyn(&[n, m]));
+    let gil = Python::acquire_gil();
+    let py = gil.python();
+    let a = PyArray::from_array(py, &array).to_owned(); // from_shape_and_data::<f64, f32>(IxDyn(&[
+                                                        // n, m]), array.as_slice_mut().unwrap()).unwrap();
+
+    for i in 0..n {
+        for j in 0..m {
+            array[[i, j]] = rng.gen::<f64>();
+        }
+    }
+
+    array
+}
+
+#[pymodule]
+#[pyo3(name = "neural")]
+pub fn nnet(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_class::<Linear>()?;
+    Ok(())
+}
