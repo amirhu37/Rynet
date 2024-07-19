@@ -1,6 +1,6 @@
-use std::{collections::HashMap, ops::Bound};
+use std::collections::HashMap;
 
-use pyo3::{prelude::*, types::{IntoPyDict, PyDict, PyTuple}};
+use pyo3::{prelude::*, types::{PyDict, PyTuple}};
 
 #[pyclass(module = "nn", name = "mlp", unsendable, subclass, sequence, dict)]
 #[pyo3(text_signature = "(*args , **kwargs)")]
