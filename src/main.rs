@@ -1,15 +1,22 @@
-// use ndarray::{arr2};
-// #![recursion_limit = "5053"]
-// use ndarray::Array;
-// use ndarray::ArrayD;
-// use ndarray::IxDyn;
-// use nn::nn::Linear;
-// use nn::nn::ActiovationFunction::*;
-// use nn::nn::Ndarray;
+// use nnet::layer::Linear;
+// use crate::layer::Linear;
+// use pyo3::{Py, Python};
 
-// // use std::f128::
 
-// sigmoid function ove n * m ndarry
+fn main() {
 
-// use ndarray::linalg::Dot;
-fn main() {}
+    // Python::with_gil(|py| {
+    //     let linear = py.get_type::<Linear>();
+    //     // let cls = py.get_type::<nnet_module>();
+    //     pyo3::py_run!(py, linear, r#"
+
+    //         linear_layer = linear(in_features=3, out_features=2, is_bias=True)
+    //         print(linear_layer)
+    //         print(linear_layer.weights)
+    //         print(linear_layer.bias)
+    //         print(type(linear_layer))
+    //     "#)
+    // })
+
+
+}
