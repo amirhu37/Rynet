@@ -1,14 +1,13 @@
-use derive_more::Display;
-use pyo3::{
-    class,
-    exceptions::PyZeroDivisionError,
-    prelude::*,
-    types::{PyCode, PyDict, PyList, PyString, PyTuple, PyType},
-    PyClass, PyErrArguments,
-};
-use std::{borrow::Borrow, collections::HashMap};
+use std::ops::Deref;
 
-use crate::{_py_run, MODULE};
+use pyo3::{
+    prelude::*,
+    types::{IntoPyDict, PyDict, PyList, PyTuple},
+    PyErrArguments,
+};
+// use std::{borrow::Borrow, collections::HashMap, ops::Deref};
+
+use crate::_py_run;
 use pyo3::Bound;
 
 #[allow(unconditional_recursion)]
@@ -38,21 +37,42 @@ pub struct Mlp {
 impl Mlp {
     #[new]
     #[pyo3(signature = (args = None, kwargs = None) ,)]
-    pub fn __new__(py: Python, args: Option<&PyTuple>, kwargs: Option<&PyDict>) -> Self {
+    pub fn __new__(
+        py: Python,
+        args: Option<&Bound<PyTuple>>,
+        kwargs: Option<&Bound<PyDict>>,
+    ) -> Self {
+        let kw: Option<Py<PyDict>> = kwargs
+            .filter(|d| !d.is_empty())
+            .map(|d| d.into_py_dict_bound(py).unbind());
+        let arg: Option<Py<PyTuple>> = args.filter(|d| !d.is_empty()).map(|d| d.into_py(py));
         Mlp {
-            args: args.filter(|d| !d.is_empty()).map(|d| d.into_py(py)),
-            kwargs: kwargs.filter(|d| !d.is_empty()).map(|d| d.into_py(py)),
+            args: match arg {
+                Some(arg) => Some(arg),
+                None => None,
+            },
+            kwargs: match kw {
+                Some(kw) => Some(kw),
+                None => None,
+            },
         }
     }
 
-    fn parameters(slf: &Bound<Self>, py: Python) -> Py<PyDict> {
+    fn parameters<'py>(slf: &Bound<Self>, py: Python<'py>) -> Py<PyDict> {
         // acces dict of the class
-        let cx = _py_run(&slf.clone().unbind().as_any(), "value.__dict__").unwrap();
-        let values = cx.call_method0(py, "values").unwrap();
-        // todo!()
-        let v: &Bound<PyAny> = values.downcast_bound::<PyAny>(py).unwrap();
-        // println!("v r {v}");
-        cx
+        let dict = slf
+            .getattr("__dict__")
+            .unwrap()
+            .downcast::<PyDict>()
+            .unwrap()
+            .clone()
+            // .unbind()
+            ;
+        let binding = dict.as_gil_ref().downcast::<PyDict>().unwrap();
+        // let v = binding.values();
+        // let v1 =  &v[0];
+        // println!("v1 : {0}", v1.weights);
+        return dict.unbind();
     }
 
     pub fn forward(&self, x: PyObject) -> PyResult<PyObject> {
