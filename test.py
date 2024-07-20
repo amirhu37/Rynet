@@ -1,4 +1,6 @@
+import os
 import nnet
+# import nnet.nnet.mlp
 # import neural
 import numpy as np
 
@@ -8,15 +10,15 @@ from tools import relu, sigmoid
 linear_layer = nnet.Linear(in_features=3, out_features=2, is_bias=True)
 linear_layer1 = nnet.Linear(in_features=3, out_features=2, is_bias=False)
 
-print("Linear layer created successfully:", linear_layer)
-print("Linear layer created successfully:", linear_layer1)
+# print("Linear layer created successfully:", linear_layer)
+# print("Linear layer created successfully:", linear_layer1)
 
 
-class SimpleNN(nnet.mlp):
+class SimpleNN(nnet.Mlp):
     def __init__(self):
         super(SimpleNN, self).__init__()
 
-        self.fc1 = nnet.Linear(6, 12)  
+        self.fc1 = nnet.Linear(60, 12)  
         self.fc2 = nnet.Linear(12, 4)
         self.fc3 = nnet.Linear(4, 3) 
         pass
@@ -28,14 +30,28 @@ class SimpleNN(nnet.mlp):
         x = relu(self.fc3(x))
         x = sigmoid(x)
         return x
+    
+x = np.random.rand(20,3)
+
+class ts:
+    def __init__(self) -> None:
+        self._1 = np.random.rand(2,1)
+        self._2 = np.random.rand(2,1)
+        self._3 = np.random.rand(2,1)
+        pass
 
 
-print(type(linear_layer.weights))
-print(linear_layer)
-print(linear_layer1.__dict__)
-
+t = ts()
+os.system("cls")
 cls = SimpleNN()
 
-x = np.random.rand(2,3)
+print(cls.__dict__)
+# print(t.__getattribute__("__dict__"))
+# print(cls.__getattribute__("__dict__"))
+
+# print(list(cls.__dict__.values()) )
+param = cls.parameters()
+print("fx1", param['fc1'].weights)
 y = cls.forward(x)
+
 print(y)

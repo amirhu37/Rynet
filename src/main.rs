@@ -2,7 +2,6 @@
 // use crate::layer::Linear;
 // use pyo3::{Py, Python};
 
-
 fn main() {
 
     // Python::with_gil(|py| {
@@ -17,6 +16,4 @@ fn main() {
     //         print(type(linear_layer))
     //     "#)
     // })
-
-
 }
