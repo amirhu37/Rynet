@@ -1,7 +1,4 @@
-import numpy as np
-# from linear_layer import Linear
-# from neural_net import Neuaral
-from nnet import nnet
+import layers
 
 class Linear:
     in_feature : int
@@ -12,8 +9,4 @@ class Linear:
         self.out_feature = out_feature
         self.bias = bias
         ...
-
-class Neuaral:
-    
-    def __init__(self, *args, **kwargs) -> None: ...
-    def forward(self, x: np.ndarray) -> np.ndarray: ...
+    def parameters()-> dict:...

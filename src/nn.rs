@@ -1,13 +1,8 @@
-use std::ops::Deref;
-
 use pyo3::{
     prelude::*,
-    types::{IntoPyDict, PyDict, PyList, PyTuple},
-    PyErrArguments,
+    types::{IntoPyDict, PyDict, PyTuple},
 };
-// use std::{borrow::Borrow, collections::HashMap, ops::Deref};
 
-use crate::_py_run;
 use pyo3::Bound;
 
 #[allow(unconditional_recursion)]
@@ -28,13 +23,13 @@ dict ,
 )]
 // #[pyo3(text_signature = "$cls(*args , **kwargs)" )]
 // #[display(fmt = "")]
-pub struct Mlp {
+pub struct Neuaral {
     pub args: Option<Py<PyTuple>>,
     pub kwargs: Option<Py<PyDict>>,
 }
 
 #[pymethods]
-impl Mlp {
+impl Neuaral {
     #[new]
     #[pyo3(signature = (args = None, kwargs = None) ,)]
     pub fn __new__(
@@ -46,7 +41,7 @@ impl Mlp {
             .filter(|d| !d.is_empty())
             .map(|d| d.into_py_dict_bound(py).unbind());
         let arg: Option<Py<PyTuple>> = args.filter(|d| !d.is_empty()).map(|d| d.into_py(py));
-        Mlp {
+        Neuaral {
             args: match arg {
                 Some(arg) => Some(arg),
                 None => None,
@@ -58,7 +53,7 @@ impl Mlp {
         }
     }
 
-    fn parameters<'py>(slf: &Bound<Self>, py: Python<'py>) -> Py<PyDict> {
+    fn parameters<'py>(slf: &Bound<Self>, _py: Python<'py>) -> Py<PyDict> {
         // acces dict of the class
         let dict = slf
             .getattr("__dict__")
@@ -68,7 +63,7 @@ impl Mlp {
             .clone()
             // .unbind()
             ;
-        let binding = dict.as_gil_ref().downcast::<PyDict>().unwrap();
+        let _binding = dict.as_gil_ref().downcast::<PyDict>().unwrap();
         // let v = binding.values();
         // let v1 =  &v[0];
         // println!("v1 : {0}", v1.weights);
