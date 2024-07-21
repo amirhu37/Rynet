@@ -1,6 +1,6 @@
 # linear.pyi
 from typing import Any, Optional, Tuple
-from rnet.rnet import *
+from nn.layer import Layer
 
 class Linear(Layer):
     weights: Any

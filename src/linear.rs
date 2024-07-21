@@ -3,13 +3,27 @@ use ndarray::{ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
 use numpy::{IntoPyArray, PyArrayDyn};
 use pyo3::{
     prelude::*,
-    types::{IntoPyDict, PyDict, PyTuple},
+    types::{IntoPyDict, PyDict},
 };
-
+/// Type alias for a 1-dimensional ndarray with owned data and dynamic dimensions.
 pub type Ndarray = ArrayBase<OwnedRepr<f64>, Dim<IxDynImpl>>;
+/// Type alias for a 2-dimensional ndarray with owned data, where each element is a vector of vectors of f64.
 pub type NDArray2 = ArrayBase<OwnedRepr<Vec<Vec<f64>>>, Dim<[usize; 2]>>;
+/// Type alias for a Python object that wraps a dynamically-sized ndarray of f64.
 pub type Object = Py<PyArrayDyn<f64>>;
 
+/// A Python class representing a linear layer in a neural network.
+///
+/// Attributes:
+///     module (str): The name of the module, which is "nn".
+///     name (str): The name of the class, which is "Linear".
+///     unsendable (bool): Indicates that the class is unsendable.
+///     extends (Layers): Indicates that the class extends the Layers class.
+///     subclass (bool): Indicates that the class can be subclassed.
+///     sequence (bool): Indicates that the class behaves like a sequence.
+///     dict (bool): Indicates that the class has a dictionary attribute.
+///     get_all (bool): Indicates that all attributes are gettable.
+///     set_all (bool): Indicates that all attributes are settable.
 #[derive(FromPyObject)]
 #[pyclass(
     module = "nn",
@@ -24,21 +38,42 @@ pub type Object = Py<PyArrayDyn<f64>>;
 )]
 
 pub struct Linear {
+    /// The weights of the linear layer.
     pub weights: PyObject,
+    /// The bias of the linear layer.
     pub bias: PyObject,
+    /// Indicates whether the layer uses a bias term.
     pub is_bias: bool,
+    /// Indicates whether the layer is trainable.
+    pub trainable: bool,
+    /// The shape of the linear layer as a tuple (in_features, out_features).
     shape: (u16, u16),
 }
 
 #[pymethods]
 impl Linear {
+    /// Creates a new instance of the Linear class.
+    ///
+    /// Args:
+    ///     py (Python): The Python GIL token.
+    ///     in_features (u16): The number of input features.
+    ///     out_features (u16): The number of output features.
+    ///     is_bias (Option<bool>): Whether the layer uses a bias term.
+    ///     trainable (Option<bool>): Whether the layer is trainable.
+    ///     args (Bound<'_, PyAny>): Positional arguments.
+    ///     kwargs (Option<Bound<'_, PyAny>>): Keyword arguments.
+    ///
+    /// Returns:
+    ///     PyResult<(Self, Layers)>: A new instance of the Linear class and its base Layers class.
     #[new]
-    #[pyo3(signature = (in_features , out_features, is_bias = true , *args , **kwargs  ))]
+    #[pyo3(signature = (in_features , out_features, is_bias = true , trainable = true,  *args , **kwargs  ))]
+    #[allow(unused_variables)]
     pub fn __new__<'py>(
         py: Python,
         in_features: u16,
         out_features: u16,
         is_bias: Option<bool>,
+        trainable: Option<bool>,
         args: &Bound<'_, PyAny>,
         kwargs: Option<&Bound<'_, PyAny>>,
     ) -> PyResult<(Self, Layers)> {
@@ -60,6 +95,7 @@ impl Linear {
                 weights: random_weight.into_pyarray_bound(py).to_owned().into(),
                 bias: random_bias.into_pyarray_bound(py).to_owned().into(),
                 is_bias: is_bias,
+                trainable: trainable.unwrap_or(true),
                 shape: (in_features, out_features),
             },
             Layers,

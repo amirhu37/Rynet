@@ -1,12 +1,10 @@
 // ### Common Methods for All Optimizers
 // - **`step(closure=None)`**: Performs a single optimization step (parameter update). For some optimizers like `LBFGS`, `closure` is a callable that re-evaluates the model and returns
-//  the optim.
+//  the loss.
 // - **`zero_grad()`**: Sets the gradients of all optimized tensors to zero. This is typically called before the backward pass to prevent accumulation of gradients from multiple passes.
 
-use pyo3::prelude::*;
-
 /// ### 1. **SGD (Stochastic Gradient Descent)**
-/// SGD is one of the simplest and most commonly used optimizers. It updates the parameters using the gradient of the optim function.
+/// SGD is one of the simplest and most commonly used optimizers. It updates the parameters using the gradient of the loss function.
 /// #### Constructor:
 /// ```
 /// SGD(params, lr=<required parameter>, momentum=0, dampening=0, weight_decay=0, nesterov=False)
@@ -21,8 +19,6 @@ use pyo3::prelude::*;
 /// #### Methods:
 /// - `step()`: Performs a single optimization step (parameter update).
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
-
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct SGD;
 impl SGD {}
 
@@ -43,7 +39,6 @@ impl SGD {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct Adam;
 impl Adam {}
 /// ### 3. **RMSprop (Root Mean Square Propagation)**
@@ -64,7 +59,6 @@ impl Adam {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct RMSprop;
 impl RMSprop {}
 /// ### 4. **Adagrad (Adaptive Gradient Algorithm)**
@@ -83,7 +77,6 @@ impl RMSprop {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct Adagrad;
 impl Adagrad {}
 /// ### 5. **Adadelta**
@@ -102,7 +95,6 @@ impl Adagrad {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct Adadelta;
 impl Adadelta {}
 /// ### 6. **AdamW (Adam with Weight Decay Regularization)**
@@ -122,7 +114,6 @@ impl Adadelta {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct AdamW;
 impl AdamW {}
 /// ### 7. **SparseAdam**
@@ -140,7 +131,6 @@ impl AdamW {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct SparseAdam;
 impl SparseAdam {}
 /// ### 8. **Adamax**
@@ -159,7 +149,6 @@ impl SparseAdam {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct Adamax;
 impl Adamax {}
 /// ### 9. **LBFGS (Limited-memory Broyden–Fletcher–Goldfarb–Shanno)**
@@ -181,7 +170,6 @@ impl Adamax {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct LBFGS;
 impl LBFGS {}
 /// ### 10. **ASGD (Averaged Stochastic Gradient Descent)**
@@ -201,7 +189,6 @@ impl LBFGS {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct ASGD;
 impl ASGD {}
 /// ### 11. **Rprop (Resilient Backpropagation)**
@@ -218,6 +205,5 @@ impl ASGD {}
 /// #### Methods:
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
-#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct Rprop;
 impl Rprop {}

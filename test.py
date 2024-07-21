@@ -44,7 +44,8 @@ class custom_layer(nnet.Layer):
 
 os.system("cls")
 cls = SimpleNN()
-l = nnet.Layer()
+# l = nnet.Layer()
+print(linear_layer.__new__.__doc__)
 lyer = custom_layer(2 , 30)
 lyer.su()
 print(lyer.__class__.__name__)
