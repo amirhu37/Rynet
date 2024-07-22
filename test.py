@@ -1,23 +1,24 @@
 import os
-import nnet
 from nnet import nnet
-
+# from nnet import layers ,  
+from nnet.nnet import * 
+# print(nnet.__dict__)
 import numpy as np
 
 from tools import relu
 
 
-linear_layer = nnet.Linear(in_features=3, out_features=2, is_bias=True)
-linear_layer1 = nnet.Linear(in_features=3, out_features=2, is_bias=False)
+linear_layer = Linear(in_features=3, out_features=2, is_bias=True)
+linear_layer1 = Linear(in_features=3, out_features=2, is_bias=False)
 
 
 
-class SimpleNN(nnet.Neuaral):
+class SimpleNN(Neuaral):
     def __init__(self):
         super(SimpleNN, self).__init__()
-        self.fc1 = nnet.Linear(3, 12)  
-        self.fc2 = nnet.Linear(12, 4)
-        self.fc3 = nnet.Linear(4, 1) 
+        self.fc1 = Linear(3, 12)  
+        self.fc2 = Linear(12, 4)
+        self.fc3 = Linear(4, 1) 
         pass
 
     def forward(self, x : np.ndarray):
@@ -39,7 +40,7 @@ print(y)
 # print(y_c)
 
 
-class custom_layer(nnet.Layer):
+class custom_layer(Layer):
     def __init__(self, in_features, out_features, is_bias=True , *args, **kwargs ):
         self.in_features = in_features
         self.out_features = out_features
@@ -58,6 +59,6 @@ print(x[0])
 y_hat = cls.forward(x[0])
 print(f"y {y[0]}")
 print(f"y_hat {y_hat}")
-criterion = nnet.MSELoss("sum")
+criterion = MSELoss("sum")
 loss = criterion(np.max(y_hat) , y[0])
 print(loss)
