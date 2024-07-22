@@ -1,5 +1,11 @@
-// Loss functions, also known as cost functions or objective functions, measure how well a model's predictions match the actual target values. They are crucial for training machine learning models, as they provide the feedback signal used to adjust the model's parameters during optimization.
+use std::borrow::Cow;
 
+use numpy as np;
+
+// Loss functions, also known as cost functions or objective functions, measure how well a model's predictions match the actual target values. They are crucial for training machine learning models, as they provide the feedback signal used to adjust the model's parameters during optimization.
+use pyo3::prelude::*;
+
+use crate::{apply_func, BoundedArray, NpNdarray};
 /// ### 1. **Mean Squared Error Loss (MSELoss)**
 /// Measures the average squared difference between predicted and actual values. Commonly used in regression tasks.
 /// ```
@@ -12,8 +18,42 @@
 /// criterion = MSELoss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct MSELoss;
-impl MSELoss {}
+
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct MSELoss {
+    // pub reduction: String,
+}
+#[pymethods]
+impl MSELoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        MSELoss {}
+        // {
+        //     reduction: reduction.to_string(),
+        //     }
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res: Py<PyAny> = Python::with_gil(|py| {
+            let loss = predicted.sub(targets).unwrap()
+                                    .pow(2, py.None()).unwrap()
+                                    .pow(0.5, py.None()).unwrap();
+            loss.unbind()
+        });
+        res
+    }
+}
 
 /// ### 2. **Cross Entropy Loss (CrossEntropyLoss)**
 /// Combines `LogSoftmax` and `NLLLoss` in one single class. It is useful for classification tasks.
@@ -29,7 +69,22 @@ impl MSELoss {}
 /// criterion = CrossEntropyLoss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct CrossEntropyLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct CrossEntropyLoss;
+
+#[pymethods]
 impl CrossEntropyLoss {}
 
 /// ### 3. **Binary Cross Entropy Loss (BCELoss)**
@@ -40,7 +95,22 @@ impl CrossEntropyLoss {}
 /// ```
 /// - `weight`: A manual rescaling weight given to each class.
 /// - `reduction`: Specifies the reduction to apply to the output.
-struct BCELoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct BCELoss;
+
+#[pymethods]
 impl BCELoss {}
 
 /// ### 4. **Binary Cross Entropy with Logits Loss (BCEWithLogitsLoss)**
@@ -57,7 +127,22 @@ impl BCELoss {}
 /// criterion = BCEWithLogitsLoss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct BCEWithLogitsLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct BCEWithLogitsLoss;
+
+#[pymethods]
 impl BCEWithLogitsLoss {}
 /// ### 5. **Negative Log-Likelihood Loss (NLLLoss)**
 /// Often used in classification problems involving a log-probability output.
@@ -77,7 +162,22 @@ impl BCEWithLogitsLoss {}
 /// criterion = NLLLoss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct NLLLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct NLLLoss;
+
+#[pymethods]
 impl NLLLoss {}
 /// ### 6. **Kullback-Leibler Divergence Loss (KLDivLoss)**
 /// Measures the Kullback-Leibler divergence between two distributions.
@@ -96,7 +196,22 @@ impl NLLLoss {}
 /// criterion = KLDivLoss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct KLDivLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct KLDivLoss;
+
+#[pymethods]
 impl KLDivLoss {}
 /// ### 7. **L1 Loss (L1Loss)**
 /// Measures the mean absolute error between the predicted and actual values.
@@ -114,7 +229,22 @@ impl KLDivLoss {}
 /// criterion = L1Loss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct L1Loss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct L1Loss;
+
+#[pymethods]
 impl L1Loss {}
 /// ### 8. **Hinge Embedding Loss (HingeEmbeddingLoss)**
 /// Used for learning embeddings.
@@ -133,7 +263,22 @@ impl L1Loss {}
 /// criterion = HingeEmbeddingLoss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct HingeEmbeddingLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct HingeEmbeddingLoss;
+
+#[pymethods]
 impl HingeEmbeddingLoss {}
 /// ### 9. **Huber Loss (SmoothL1Loss)**
 /// Combines the advantages of L1 and L2 loss functions, used for regression tasks.
@@ -152,7 +297,22 @@ impl HingeEmbeddingLoss {}
 /// criterion = SmoothL1Loss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct SmoothL1Loss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct SmoothL1Loss;
+
+#[pymethods]
 impl SmoothL1Loss {}
 /// ### 10. **Cosine Embedding Loss (CosineEmbeddingLoss)**
 /// Measures the loss given inputs `x1`, `x2`, and a label `y` with values 1 or -1.
@@ -171,7 +331,22 @@ impl SmoothL1Loss {}
 /// criterion = CosineEmbeddingLoss()
 /// loss = criterion(x1, x2, targets)
 /// ```
-struct CosineEmbeddingLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct CosineEmbeddingLoss;
+
+#[pymethods]
 impl CosineEmbeddingLoss {}
 /// ### 11. **Margin Ranking Loss (MarginRankingLoss)**
 /// Creates a criterion that measures the loss given inputs `x1`, `x2`, and a label tensor `y` with values 1 or -1.
@@ -190,7 +365,22 @@ impl CosineEmbeddingLoss {}
 /// criterion = MarginRankingLoss()
 /// loss = criterion(x1, x2, targets)
 /// ```
-struct MarginRankingLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct MarginRankingLoss;
+
+#[pymethods]
 impl MarginRankingLoss {}
 /// ### 12. **Multi-label Margin Loss (MultiLabelMarginLoss)**
 /// Measures the loss given inputs `x` and multi-label targets `y`.
@@ -208,7 +398,22 @@ impl MarginRankingLoss {}
 /// criterion = MultiLabelMarginLoss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct MultiLabelMarginLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct MultiLabelMarginLoss;
+
+#[pymethods]
 impl MultiLabelMarginLoss {}
 /// ### 13. **Multi-label Soft Margin Loss (MultiLabelSoftMarginLoss)**
 /// Measures the loss for multi-label classification tasks.
@@ -227,7 +432,22 @@ impl MultiLabelMarginLoss {}
 /// criterion = MultiLabelSoftMarginLoss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct MultiLabelSoftMarginLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct MultiLabelSoftMarginLoss;
+
+#[pymethods]
 impl MultiLabelSoftMarginLoss {}
 /// ### 14. **Soft Margin Loss (SoftMarginLoss)**
 /// Measures the binary cross entropy between input logits and target labels.
@@ -245,7 +465,22 @@ impl MultiLabelSoftMarginLoss {}
 /// criterion = SoftMarginLoss()
 /// loss = criterion(predictions, targets)
 /// ```
-struct SoftMarginLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct SoftMarginLoss;
+
+#[pymethods]
 impl SoftMarginLoss {}
 /// ### 15. **Triplet Margin Loss (TripletMarginLoss)**
 /// Measures the triplet loss, used for training embeddings.
@@ -267,7 +502,22 @@ impl SoftMarginLoss {}
 /// criterion = TripletMarginLoss()
 /// loss = criterion(anchor, positive, negative)
 /// ```
-struct TripletMarginLoss;
+// #[derive(FromPyObject)]
+#[pyclass(
+    module = "nn",
+//    name = "Linear",
+    unsendable,
+//    extends= Layers,
+    subclass,
+    sequence,
+    dict,
+//    get_all,
+//    set_all
+)]
+
+pub struct TripletMarginLoss;
+
+#[pymethods]
 impl TripletMarginLoss {}
 
 // ### Common Methods for Loss Functions

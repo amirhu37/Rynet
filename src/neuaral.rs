@@ -11,15 +11,7 @@ use pyo3::Bound;
     //  Display,
     Clone,
 )]
-#[pyclass(
-module = "nn", 
-unsendable,
-get_all,
-set_all,
-subclass,
-sequence,
-dict ,
-)]
+#[pyclass(module = "nn", unsendable, get_all, set_all, subclass, sequence, dict)]
 // #[pyo3(text_signature = "$cls(*args , **kwargs)" )]
 // #[display(fmt = "")]
 pub struct Neuaral {
