@@ -1,11 +1,12 @@
 use std::borrow::Cow;
 
-use numpy as np;
+use ndarray::IxDynImpl;
+use numpy::{self as np, IxDyn, PyArray};
 
 // Loss functions, also known as cost functions or objective functions, measure how well a model's predictions match the actual target values. They are crucial for training machine learning models, as they provide the feedback signal used to adjust the model's parameters during optimization.
 use pyo3::prelude::*;
 
-use crate::{apply_func, BoundedArray, NpNdarray};
+use crate::{apply_func, py_run, BoundedArray, NpNdarray, _py_run};
 /// ### 1. **Mean Squared Error Loss (MSELoss)**
 /// Measures the average squared difference between predicted and actual values. Commonly used in regression tasks.
 /// ```
@@ -46,9 +47,13 @@ impl MSELoss {
     }
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res: Py<PyAny> = Python::with_gil(|py| {
-            let loss = predicted.sub(targets).unwrap()
-                                    .pow(2, py.None()).unwrap()
-                                    .pow(0.5, py.None()).unwrap();
+            let loss = predicted
+                .sub(targets)
+                .unwrap()
+                .pow(2, py.None())
+                .unwrap()
+                .pow(0.5, py.None())
+                .unwrap();
             loss.unbind()
         });
         res
@@ -111,7 +116,16 @@ impl CrossEntropyLoss {}
 pub struct BCELoss;
 
 #[pymethods]
-impl BCELoss {}
+impl BCELoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        BCELoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 
 /// ### 4. **Binary Cross Entropy with Logits Loss (BCEWithLogitsLoss)**
 /// Combines a `Sigmoid` layer and the `BCELoss` in one single class.
@@ -143,7 +157,16 @@ impl BCELoss {}
 pub struct BCEWithLogitsLoss;
 
 #[pymethods]
-impl BCEWithLogitsLoss {}
+impl BCEWithLogitsLoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        BCEWithLogitsLoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 /// ### 5. **Negative Log-Likelihood Loss (NLLLoss)**
 /// Often used in classification problems involving a log-probability output.
 
@@ -178,7 +201,16 @@ impl BCEWithLogitsLoss {}
 pub struct NLLLoss;
 
 #[pymethods]
-impl NLLLoss {}
+impl NLLLoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        NLLLoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 /// ### 6. **Kullback-Leibler Divergence Loss (KLDivLoss)**
 /// Measures the Kullback-Leibler divergence between two distributions.
 
@@ -212,7 +244,16 @@ impl NLLLoss {}
 pub struct KLDivLoss;
 
 #[pymethods]
-impl KLDivLoss {}
+impl KLDivLoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        KLDivLoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 /// ### 7. **L1 Loss (L1Loss)**
 /// Measures the mean absolute error between the predicted and actual values.
 
@@ -245,7 +286,16 @@ impl KLDivLoss {}
 pub struct L1Loss;
 
 #[pymethods]
-impl L1Loss {}
+impl L1Loss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        L1Loss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 /// ### 8. **Hinge Embedding Loss (HingeEmbeddingLoss)**
 /// Used for learning embeddings.
 
@@ -279,7 +329,16 @@ impl L1Loss {}
 pub struct HingeEmbeddingLoss;
 
 #[pymethods]
-impl HingeEmbeddingLoss {}
+impl HingeEmbeddingLoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        HingeEmbeddingLoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 /// ### 9. **Huber Loss (SmoothL1Loss)**
 /// Combines the advantages of L1 and L2 loss functions, used for regression tasks.
 
@@ -313,7 +372,16 @@ impl HingeEmbeddingLoss {}
 pub struct SmoothL1Loss;
 
 #[pymethods]
-impl SmoothL1Loss {}
+impl SmoothL1Loss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        SmoothL1Loss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 /// ### 10. **Cosine Embedding Loss (CosineEmbeddingLoss)**
 /// Measures the loss given inputs `x1`, `x2`, and a label `y` with values 1 or -1.
 
@@ -347,7 +415,17 @@ impl SmoothL1Loss {}
 pub struct CosineEmbeddingLoss;
 
 #[pymethods]
-impl CosineEmbeddingLoss {}
+impl CosineEmbeddingLoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        CosineEmbeddingLoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
+
 /// ### 11. **Margin Ranking Loss (MarginRankingLoss)**
 /// Creates a criterion that measures the loss given inputs `x1`, `x2`, and a label tensor `y` with values 1 or -1.
 
@@ -381,7 +459,16 @@ impl CosineEmbeddingLoss {}
 pub struct MarginRankingLoss;
 
 #[pymethods]
-impl MarginRankingLoss {}
+impl MarginRankingLoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        MarginRankingLoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 /// ### 12. **Multi-label Margin Loss (MultiLabelMarginLoss)**
 /// Measures the loss given inputs `x` and multi-label targets `y`.
 
@@ -414,7 +501,16 @@ impl MarginRankingLoss {}
 pub struct MultiLabelMarginLoss;
 
 #[pymethods]
-impl MultiLabelMarginLoss {}
+impl MultiLabelMarginLoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        MultiLabelMarginLoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 /// ### 13. **Multi-label Soft Margin Loss (MultiLabelSoftMarginLoss)**
 /// Measures the loss for multi-label classification tasks.
 
@@ -448,7 +544,16 @@ impl MultiLabelMarginLoss {}
 pub struct MultiLabelSoftMarginLoss;
 
 #[pymethods]
-impl MultiLabelSoftMarginLoss {}
+impl MultiLabelSoftMarginLoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        MultiLabelSoftMarginLoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 /// ### 14. **Soft Margin Loss (SoftMarginLoss)**
 /// Measures the binary cross entropy between input logits and target labels.
 
@@ -481,7 +586,16 @@ impl MultiLabelSoftMarginLoss {}
 pub struct SoftMarginLoss;
 
 #[pymethods]
-impl SoftMarginLoss {}
+impl SoftMarginLoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        SoftMarginLoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 /// ### 15. **Triplet Margin Loss (TripletMarginLoss)**
 /// Measures the triplet loss, used for training embeddings.
 
@@ -518,7 +632,16 @@ impl SoftMarginLoss {}
 pub struct TripletMarginLoss;
 
 #[pymethods]
-impl TripletMarginLoss {}
+impl TripletMarginLoss {
+    #[new]
+    fn __new__<'py>(py: Python, reduction: &str) -> Self {
+        TripletMarginLoss {}
+    }
+    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res = Python::with_gil(|py| {});
+        todo!()
+    }
+}
 
 // ### Common Methods for Loss Functions
 // - **`forward(input, target)`**: Computes the loss between the input and the target. This method is called internally when you use `criterion(input, target)`.

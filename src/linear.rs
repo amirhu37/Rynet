@@ -1,6 +1,6 @@
 use crate::{layer::Layers, random_array};
 use ndarray::{ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
-use numpy::{IntoPyArray, PyArrayDyn};
+use numpy::{dot_bound, IntoPyArray, PyArray, PyArrayDyn};
 use pyo3::{
     prelude::*,
     types::{IntoPyDict, PyDict},
@@ -11,7 +11,7 @@ pub type Ndarray = ArrayBase<OwnedRepr<f64>, Dim<IxDynImpl>>;
 pub type NDArray2 = ArrayBase<OwnedRepr<Vec<Vec<f64>>>, Dim<[usize; 2]>>;
 /// Type alias for a Python object that wraps a dynamically-sized ndarray of f64.
 pub type Object = Py<PyArrayDyn<f64>>;
-
+pub type BoundedArray<'py> = Bound<'py, PyArray<f64, IxDyn>>;
 /// A Python class representing a linear layer in a neural network.
 ///
 /// Attributes:
@@ -131,30 +131,31 @@ impl Linear {
         return dict.unbind();
     }
 
-    fn __call__(&self, py: Python<'_>, value: &Bound<PyAny>) -> PyResult<PyObject> {
+    fn __call__(&self, py: Python<'_>, value: &Bound<PyArray<f64, IxDyn>>) -> PyResult<PyObject> {
         // Convert value to PyArrayDyn
-        let value: &PyArrayDyn<f64> = value.extract()?;
+        // let value: &PyArrayDyn<f64> = value.extract()?;
 
         // Get NumPy module
         let np = PyModule::import_bound(py, "numpy")?;
         // Transpose value
         // let transpose = np.getattr("transpose")?.call1((self.weights.clone(),))?;
         // Perform dot product: self.weights \dot value
-        let weight = self.weights.bind(py);
+        let weight: &Bound<PyArray<f64, IxDyn>> = self.weights.downcast_bound(py).unwrap();
         let bias = self.bias.bind(py);
-
-        let dot_result = np
-            .getattr("dot")
-            .expect("Invalid import dot")
-            .call1((value, weight))
-            .expect("dot prod error");
+        let dot_result: Bound<PyArray<f64, IxDyn>> = dot_bound(value, weight).unwrap();
+        // println!("r {}", dot_result.add(bias).unwrap());
+        // let dot_result = np
+        //     .getattr("dot")
+        //     .expect("Invalid import dot")
+        //     .call1((value, weight))
+        //     .expect("dot prod error");
 
         // Add bias: (self.weights \dot value) + self.bias
-        let result = np
-            .getattr("add")
-            .expect("error import add")
-            .call1((dot_result, bias))
-            .expect("summation error");
+        let result = dot_result.add(bias).unwrap();
+        // .getattr("add")
+        // .expect("error import add")
+        // .call1((dot_result, bias))
+        // .expect("summation error");
 
         Ok(result.to_object(py))
     }
