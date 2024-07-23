@@ -46,19 +46,16 @@ class custom_layer(Layer):
         self.out_features = out_features
         # super(custom_layer, self).__init__()
         pass
-    def su(self):
+    def some_custom_method(self):
         print( self.in_features * self.out_features )
-
+        pass
 
 # os.system("cls")
 cls = SimpleNN()
 
 param = cls.parameters()
-pr  = param['fc1'].weights 
-print(x[0])
-y_hat = cls.forward(x[0])
-print(f"y {y[0]}")
-print(f"y_hat {y_hat}")
-criterion = MSELoss("sum")
-loss = criterion(np.max(y_hat) , y[0])
+y_hat = cls.forward(x)
+
+criterion = MSELoss()
+loss = criterion(y_hat , y)
 print(loss)

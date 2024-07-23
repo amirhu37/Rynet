@@ -15,7 +15,7 @@ pub type BoundedArray<'py> = Bound<'py, PyArray<f64, IxDyn>>;
 /// A Python class representing a linear layer in a neural network.
 ///
 /// Attributes:
-///     module (str): The name of the module, which is "nn".
+///     module (str): The name of the module, which is "rnet".
 ///     name (str): The name of the class, which is "Linear".
 ///     unsendable (bool): Indicates that the class is unsendable.
 ///     extends (Layers): Indicates that the class extends the Layers class.
@@ -26,7 +26,7 @@ pub type BoundedArray<'py> = Bound<'py, PyArray<f64, IxDyn>>;
 ///     set_all (bool): Indicates that all attributes are settable.
 #[derive(FromPyObject)]
 #[pyclass(
-    module = "nn",
+    module = "rnet",
     name = "Linear",
     unsendable,
     extends= Layers,
