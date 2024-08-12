@@ -1,7 +1,8 @@
 import os
-from nnet import nnet
+# from layers import Layer
+from rnet import Linear, Neuaral ,Layer
 # from nnet import layers ,  
-from nnet.nnet import * 
+from rnet.rnet import * 
 # print(nnet.__dict__)
 import numpy as np
 
@@ -18,7 +19,7 @@ class SimpleNN(Neuaral):
         super(SimpleNN, self).__init__()
         self.fc1 = Linear(3, 12)  
         self.fc2 = Linear(12, 4)
-        self.fc3 = Linear(4, 1) 
+        self.fc3 = Linear(4, 3) 
         pass
 
     def forward(self, x : np.ndarray):
@@ -28,16 +29,16 @@ class SimpleNN(Neuaral):
         # x = relu(self.fc3(x))
         # x = nnet.softmax(x)[0]
         # x = sigmoid(x)
+        x = relu(self.fc3(x))
         print(x.shape)
-        x = self.fc3(x)
         return x
     
 x = np.random.rand(20,3)
 # y = np.random.randint(0,3,20)
-y = np.random.rand(20)
+y = np.random.randint(0,3,20)
 print(y)
-# y_c = np.eye(20,3)[y]
-# print(y_c)
+y_c = np.eye(20,3)[y]
+print(y_c)
 
 
 class custom_layer(Layer):
@@ -50,12 +51,33 @@ class custom_layer(Layer):
         print( self.in_features * self.out_features )
         pass
 
-# os.system("cls")
+os.system("cls")
 cls = SimpleNN()
+y_hat = cls(x[0])
+print(f"""
+x.0 
+
+{x[0]}
+---------------
+y_hat.0
+
+
+{y_hat}
+""")
 
 param = cls.parameters()
-y_hat = cls.forward(x)
 
-criterion = MSELoss()
-loss = criterion(y_hat , y)
+criterion = MSELoss('mean')
+print(
+    y_hat  ,
+    y_c[0]
+)
+loss = criterion(y_hat[0] , y_c[0])
+print(loss)
+
+for _ in range(10):
+    y_hat = cls(x[0])
+    criterion = MSELoss('mean')
+    loss = criterion(y_hat[0] , y_c[0])
+    
 print(loss)

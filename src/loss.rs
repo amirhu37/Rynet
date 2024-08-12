@@ -1,12 +1,9 @@
-use std::borrow::Cow;
 
-use ndarray::IxDynImpl;
-use numpy::{self as np, IxDyn, PyArray};
 
 // Loss functions, also known as cost functions or objective functions, measure how well a model's predictions match the actual target values. They are crucial for training machine learning models, as they provide the feedback signal used to adjust the model's parameters during optimization.
 use pyo3::prelude::*;
 
-use crate::{apply_func, py_run, BoundedArray, NpNdarray, _py_run};
+
 /// ### 1. **Mean Squared Error Loss (MSELoss)**
 /// Measures the average squared difference between predicted and actual values. Commonly used in regression tasks.
 /// ```
@@ -22,7 +19,7 @@ use crate::{apply_func, py_run, BoundedArray, NpNdarray, _py_run};
 
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -34,18 +31,21 @@ use crate::{apply_func, py_run, BoundedArray, NpNdarray, _py_run};
 )]
 
 pub struct MSELoss {
-    // pub reduction: String,
+    pub reduction: String,
 }
 #[pymethods]
 impl MSELoss {
     #[new]
-    fn __new__<'py>(py: Python, reduction: &str) -> Self {
-        MSELoss {}
+    fn __new__<'py>(_py: Python, reduction: Option<&str>) -> Self {
+        MSELoss {
+            reduction: reduction.unwrap_or("mean").to_string(),
+        }
         // {
         //     reduction: reduction.to_string(),
         //     }
     }
-    fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+    fn __call__(_slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        // let self::targets = targets;
         let res: Py<PyAny> = Python::with_gil(|py| {
             let loss = predicted
                 .sub(targets)
@@ -55,6 +55,19 @@ impl MSELoss {
                 .pow(0.5, py.None())
                 .unwrap();
             loss.unbind()
+        });
+        res
+    }
+
+    // اضافه کردن تابع برای محاسبه مشتق
+    fn derivative(_slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+        let res: Py<PyAny> = Python::with_gil(|py| {
+            let diff = predicted.sub(targets).unwrap();
+                diff .unbind()
+            // let result = diff
+                // .mul(2.0 / num_samples as f64, py.None()) // مشتق MSE نسبت به پیش‌بینی‌ها
+                // .unwrap();
+            // result.unbind()
         });
         res
     }
