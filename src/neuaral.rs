@@ -12,7 +12,7 @@ use pyo3::Bound;
     Clone,
 )]
 #[pyclass(
-    module = "rnet",
+    module = "nn",
     unsendable,
     get_all,
     set_all,

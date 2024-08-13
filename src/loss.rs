@@ -60,7 +60,7 @@ impl MSELoss {
     }
 
     // اضافه کردن تابع برای محاسبه مشتق
-    fn derivative(_slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+    fn _derivative(_slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res: Py<PyAny> = Python::with_gil(|py| {
             let diff = predicted.sub(targets).unwrap();
                 diff .unbind()
@@ -89,7 +89,7 @@ impl MSELoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -115,7 +115,7 @@ impl CrossEntropyLoss {}
 /// - `reduction`: Specifies the reduction to apply to the output.
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -156,7 +156,7 @@ impl BCELoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -200,7 +200,7 @@ impl BCEWithLogitsLoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -243,7 +243,7 @@ impl NLLLoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -285,7 +285,7 @@ impl KLDivLoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -328,7 +328,7 @@ impl L1Loss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -371,7 +371,7 @@ impl HingeEmbeddingLoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -414,7 +414,7 @@ impl SmoothL1Loss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -458,7 +458,7 @@ impl CosineEmbeddingLoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -500,7 +500,7 @@ impl MarginRankingLoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -543,7 +543,7 @@ impl MultiLabelMarginLoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -585,7 +585,7 @@ impl MultiLabelSoftMarginLoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,
@@ -631,7 +631,7 @@ impl SoftMarginLoss {
 /// ```
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "loss",
 //    name = "Linear",
     unsendable,
 //    extends= Layers,

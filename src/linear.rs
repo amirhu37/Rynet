@@ -31,7 +31,7 @@ pub type MultiDim = IxDyn;
 ///     set_all (bool): Indicates that all attributes are settable.
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "rnet",
+    module = "layer",
     name = "Linear",
     unsendable,
     extends= Layers,
