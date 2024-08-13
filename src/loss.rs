@@ -1,8 +1,5 @@
-
-
 // Loss functions, also known as cost functions or objective functions, measure how well a model's predictions match the actual target values. They are crucial for training machine learning models, as they provide the feedback signal used to adjust the model's parameters during optimization.
 use pyo3::prelude::*;
-
 
 /// ### 1. **Mean Squared Error Loss (MSELoss)**
 /// Measures the average squared difference between predicted and actual values. Commonly used in regression tasks.
@@ -20,7 +17,7 @@ use pyo3::prelude::*;
 // #[derive(FromPyObject)]
 #[pyclass(
     module = "loss",
-//    name = "Linear",
+    name = "MSELoss",
     unsendable,
 //    extends= Layers,
     subclass,
@@ -60,13 +57,17 @@ impl MSELoss {
     }
 
     // اضافه کردن تابع برای محاسبه مشتق
-    fn _derivative(_slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
+    fn _derivative(
+        _slf: Bound<Self>,
+        predicted: &Bound<PyAny>,
+        targets: &Bound<PyAny>,
+    ) -> PyObject {
         let res: Py<PyAny> = Python::with_gil(|py| {
             let diff = predicted.sub(targets).unwrap();
-                diff .unbind()
+            diff.unbind()
             // let result = diff
-                // .mul(2.0 / num_samples as f64, py.None()) // مشتق MSE نسبت به پیش‌بینی‌ها
-                // .unwrap();
+            // .mul(2.0 / num_samples as f64, py.None()) // مشتق MSE نسبت به پیش‌بینی‌ها
+            // .unwrap();
             // result.unbind()
         });
         res

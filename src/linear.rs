@@ -1,7 +1,7 @@
-use crate::{layer::Layers, random_bias, random_weight, DnArrayAsF32, DnArrayAsF64};
-use ndarray::{ Array1, ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
+use crate::{layer::Layers, random_bias, random_weight, DnArrayAs};
+use ndarray::{Array1, ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
 
-use numpy::{dot_bound,  IntoPyArray, PyArray, PyArrayDyn};
+use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, PyArray, PyArrayDyn};
 use pyo3::{
     prelude::*,
     types::{IntoPyDict, PyDict, PyTuple},
@@ -17,18 +17,18 @@ pub type Object = Py<PyArrayDyn<f64>>;
 pub type BoundedArray<'py> = Bound<'py, PyArray<f64, IxDyn>>;
 pub type PyNdArray<'py, Type, Dimension> = Bound<'py, PyArray<Type, Dimension>>;
 pub type MultiDim = IxDyn;
-/// A Python class representing a linear layer in a neural network.
+///# A Python class representing a linear layer in a neural network.
 ///
-/// Attributes:
-///     module (str): The name of the module, which is "rnet".
-///     name (str): The name of the class, which is "Linear".
-///     unsendable (bool): Indicates that the class is unsendable.
-///     extends (Layers): Indicates that the class extends the Layers class.
-///     subclass (bool): Indicates that the class can be subclassed.
-///     sequence (bool): Indicates that the class behaves like a sequence.
-///     dict (bool): Indicates that the class has a dictionary attribute.
-///     get_all (bool): Indicates that all attributes are gettable.
-///     set_all (bool): Indicates that all attributes are settable.
+///## Attributes:
+///*     module (str): The name of the module, which is "layer".
+///*     name (str): The name of the class, which is "Linear".
+///*     unsendable (bool): Indicates that the class is unsendable.
+///*     extends (Layers): Indicates that the class extends the Layers class.
+///*     subclass (bool): Indicates that the class can be subclassed.
+///*     sequence (bool): Indicates that the class behaves like a sequence.
+///*     dict (bool): Indicates that the class has a dictionary attribute.
+///*     get_all (bool): Indicates that all attributes are gettable.
+///*     set_all (bool): Indicates that all attributes are settable.
 // #[derive(FromPyObject)]
 #[pyclass(
     module = "layer",
@@ -57,16 +57,16 @@ pub struct Linear {
 
 #[pymethods]
 impl Linear {
-    /// Creates a new instance of the Linear class.
+    ///## Creates a new instance of the Linear class.
     ///
-    /// Args:
-    ///     py (Python): The Python GIL token.
-    ///     in_features (u16): The number of input features.
-    ///     out_features (u16): The number of output features.
-    ///     is_bias (Option<bool>): Whether the layer uses a bias term.
-    ///     trainable (Option<bool>): Whether the layer is trainable.
-    ///     args (Bound<'_, PyAny>): Positional arguments.
-    ///     kwargs (Option<Bound<'_, PyAny>>): Keyword arguments.
+    ///### Args:
+    ///*     py (Python): The Python GIL token.
+    ///*     in_features (u16): The number of input features.
+    ///*     out_features (u16): The number of output features.
+    ///*     is_bias (Option<bool>): Whether the layer uses a bias term.
+    ///*     trainable (Option<bool>): Whether the layer is trainable.
+    ///*     args (Bound<'_, PyAny>): Positional arguments.
+    ///*     kwargs (Option<Bound<'_, PyAny>>): Keyword arguments.
     ///
     /// Returns:
     ///     PyResult<(Self, Layers)>: A new instance of the Linear class and its base Layers class.
@@ -82,7 +82,6 @@ impl Linear {
         args: &Bound<'_, PyAny>,
         kwargs: Option<&Bound<'_, PyAny>>,
     ) -> PyResult<(Self, Layers)> {
-        // let super_ = slf.as_super(); // Get &PyRef<BaseClass>
         let is_bias = match is_bias {
             Some(is_bias) => is_bias,
             None => false,
@@ -91,11 +90,12 @@ impl Linear {
         let random_weight: Ndarray<IxDynImpl> =
             random_weight(in_features.into(), out_features.into());
         let random_bias: Ndarray<[usize; 1]> = if is_bias {
-            let r_bias: ArrayBase<OwnedRepr<f64>, Dim<[usize; 1]>> = random_bias(out_features.into());
-                r_bias
+            let r_bias: ArrayBase<OwnedRepr<f64>, Dim<[usize; 1]>> =
+                random_bias(out_features.into());
+            r_bias
         } else {
-            let zero_bias : ArrayBase<OwnedRepr<f64>, Dim<[usize; 1]>> = Array1::zeros(out_features);
-                zero_bias
+            let zero_bias: ArrayBase<OwnedRepr<f64>, Dim<[usize; 1]>> = Array1::zeros(out_features);
+            zero_bias
         };
 
         let result = (
@@ -112,9 +112,7 @@ impl Linear {
     }
 
     #[pyo3(text_signature = "($cls )")]
-    fn parameters<'py>(slf: &Bound<Self>,
-                        _py: Python<'py>
-                    ) -> Py<PyDict> {
+    fn parameters<'py>(slf: &Bound<Self>, _py: Python<'py>) -> Py<PyDict> {
         // acces dict of the class
         let dict = slf
             .getattr("__dict__")
@@ -127,35 +125,22 @@ impl Linear {
         return dict.unbind();
     }
 
-    fn __call__(slf: &Bound<Self>,
-         py: Python<'_>, 
-         value: &Bound<PyAny>
-        ) -> PyResult<PyObject> {
+    fn __call__(slf: &Bound<Self>, py: Python<'_>, value: &Bound<PyAny>) -> PyResult<PyObject> {
         //cast `value` in to ndarray
-        let value: &PyArrayDyn<f32> = value.extract()?;
-        let value: DnArrayAsF32 = value.to_owned_array();
-        let weight: &PyArrayDyn<f32> = slf.borrow().weight.extract(py)?;
-        let weight: DnArrayAsF32 = weight.to_owned_array().t().to_owned();
+        let value: &PyArrayDyn<npy_float> = value.extract()?;
+        let value: DnArrayAs<npy_float> = value.to_owned_array();
+        let weight: &PyArrayDyn<npy_float> = slf.borrow().weight.extract(py)?;
+        let weight: DnArrayAs<npy_float> = weight.to_owned_array().t().to_owned();
 
-        let result: Bound<PyArrayDyn<f32>> = dot_bound(
+        let result: Bound<PyArrayDyn<npy_float>> = dot_bound(
             &value.into_pyarray_bound(py),
             &weight.into_pyarray_bound(py),
-        ).unwrap();
+        )
+        .unwrap();
 
         let result = result.add(slf.borrow().bias.to_owned())?;
         Ok(result.to_object(py))
     }
-
-    // #[pyo3(signature = (x, *args, **kwargs))]
-    // fn __call__(
-    //     &self,
-    //     py: Python ,
-    //     x : Bound<PyAny> ,
-    //     args: &Bound<'_, PyTuple>,
-    //     kwargs: Option<&Bound<'_, PyDict>>,  
-    //     ) -> Py<PyAny> {
-    //     self.forward(py, &x).expect("Some Issue with __call__")
-    // }
 
     fn __str__(slf: &Bound<Self>) -> String {
         let bias_shape = if !slf.borrow().is_bias {

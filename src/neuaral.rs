@@ -11,15 +11,7 @@ use pyo3::Bound;
     //  Display,
     Clone,
 )]
-#[pyclass(
-    module = "nn",
-    unsendable,
-    get_all,
-    set_all,
-    subclass,
-    sequence,
-    dict
-)]
+#[pyclass(module = "nn", unsendable, get_all, set_all, subclass, sequence, dict)]
 // #[pyo3(text_signature = "$cls(*args , **kwargs)" )]
 // #[display(fmt = "")]
 pub struct Neuaral {
@@ -73,7 +65,7 @@ impl Neuaral {
         // TODO
         return Ok(x);
     }
-    pub fn __call__(&self, x: PyObject)->PyObject{
+    pub fn __call__(&self, x: PyObject) -> PyObject {
         self.forward(x).expect("call error")
     }
     fn __str__(slf: &Bound<Self>) -> PyResult<String> {

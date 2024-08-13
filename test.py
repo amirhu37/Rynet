@@ -1,8 +1,8 @@
 import os
-# from layers import Layer
-from rnet import Linear, Neuaral ,Layer
-# from nnet import layers ,  
-from rnet.rnet import * 
+
+from rnet import Linear, Neuaral, Layer 
+
+from rnet.rnet import MSELoss 
 # print(nnet.__dict__)
 import numpy as np
 

@@ -22,14 +22,7 @@ use pyo3::prelude::*;
 /// - `step()`: Performs a single optimization step (parameter update).
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct SGD;
 impl SGD {}
 
@@ -50,13 +43,7 @@ impl SGD {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct Adam;
 impl Adam {}
 /// ### 3. **RMSprop (Root Mean Square Propagation)**
@@ -77,13 +64,7 @@ impl Adam {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct RMSprop;
 impl RMSprop {}
 /// ### 4. **Adagrad (Adaptive Gradient Algorithm)**
@@ -102,13 +83,7 @@ impl RMSprop {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct Adagrad;
 impl Adagrad {}
 /// ### 5. **Adadelta**
@@ -127,13 +102,7 @@ impl Adagrad {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct Adadelta;
 impl Adadelta {}
 /// ### 6. **AdamW (Adam with Weight Decay Regularization)**
@@ -153,13 +122,7 @@ impl Adadelta {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct AdamW;
 impl AdamW {}
 /// ### 7. **SparseAdam**
@@ -177,13 +140,7 @@ impl AdamW {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct SparseAdam;
 impl SparseAdam {}
 /// ### 8. **Adamax**
@@ -202,13 +159,7 @@ impl SparseAdam {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct Adamax;
 impl Adamax {}
 /// ### 9. **LBFGS (Limited-memory Broyden–Fletcher–Goldfarb–Shanno)**
@@ -230,13 +181,7 @@ impl Adamax {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct LBFGS;
 impl LBFGS {}
 /// ### 10. **ASGD (Averaged Stochastic Gradient Descent)**
@@ -256,13 +201,7 @@ impl LBFGS {}
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
 
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct ASGD;
 impl ASGD {}
 /// ### 11. **Rprop (Resilient Backpropagation)**
@@ -279,12 +218,6 @@ impl ASGD {}
 /// #### Methods:
 /// - `step()`: Performs a single optimization step.
 /// - `zero_grad()`: Sets the gradients of all optimized tensors to zero.
-#[pyclass(
-    module = "optim",
-    unsendable,
-    subclass,
-    sequence,
-    dict,
-)]
+#[pyclass(module = "optim", unsendable, subclass, sequence, dict)]
 struct Rprop;
 impl Rprop {}
