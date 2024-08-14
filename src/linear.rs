@@ -7,14 +7,14 @@ use pyo3::{
     types::{IntoPyDict, PyDict, PyTuple},
 };
 /// Type alias for a 1-dimensional ndarray with owned data and dynamic dimensions.
-pub type Ndarray<Dimen> = ArrayBase<OwnedRepr<f64>, Dim<Dimen>>;
-// pub type d1array = ArrayBase<OwnedRepr<f64>, Dim<IxDynImpl>>;
+pub type Ndarray<Dimen> = ArrayBase<OwnedRepr<f32>, Dim<Dimen>>;
+// pub type d1array = ArrayBase<OwnedRepr<f32>, Dim<IxDynImpl>>;
 
-/// Type alias for a 2-dimensional ndarray with owned data, where each element is a vector of vectors of f64.
-pub type NDArray2 = ArrayBase<OwnedRepr<Vec<Vec<f64>>>, Dim<[usize; 2]>>;
-/// Type alias for a Python object that wraps a dynamically-sized ndarray of f64.
-pub type Object = Py<PyArrayDyn<f64>>;
-pub type BoundedArray<'py> = Bound<'py, PyArray<f64, IxDyn>>;
+/// Type alias for a 2-dimensional ndarray with owned data, where each element is a vector of vectors of f32.
+pub type NDArray2 = ArrayBase<OwnedRepr<Vec<Vec<f32>>>, Dim<[usize; 2]>>;
+/// Type alias for a Python object that wraps a dynamically-sized ndarray of f32.
+pub type Object = Py<PyArrayDyn<f32>>;
+pub type BoundedArray<'py> = Bound<'py, PyArray<f32, IxDyn>>;
 pub type PyNdArray<'py, Type, Dimension> = Bound<'py, PyArray<Type, Dimension>>;
 pub type MultiDim = IxDyn;
 ///# A Python class representing a linear layer in a neural network.
@@ -90,11 +90,11 @@ impl Linear {
         let random_weight: Ndarray<IxDynImpl> =
             random_weight(in_features.into(), out_features.into());
         let random_bias: Ndarray<[usize; 1]> = if is_bias {
-            let r_bias: ArrayBase<OwnedRepr<f64>, Dim<[usize; 1]>> =
+            let r_bias: ArrayBase<OwnedRepr<f32>, Dim<[usize; 1]>> =
                 random_bias(out_features.into());
             r_bias
         } else {
-            let zero_bias: ArrayBase<OwnedRepr<f64>, Dim<[usize; 1]>> = Array1::zeros(out_features);
+            let zero_bias: ArrayBase<OwnedRepr<f32>, Dim<[usize; 1]>> = Array1::zeros(out_features);
             zero_bias
         };
 

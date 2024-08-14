@@ -15,32 +15,28 @@ use pyo3::Bound;
 // #[pyo3(text_signature = "$cls(*args , **kwargs)" )]
 // #[display(fmt = "")]
 pub struct Neuaral {
-    pub args: Option<Py<PyTuple>>,
-    pub kwargs: Option<Py<PyDict>>,
+    // pub args: Option<Py<PyTuple>>,
+    // pub kwargs: Option<Py<PyDict>>,
 }
 
 #[pymethods]
 impl Neuaral {
     #[new]
-    #[pyo3(signature = (args = None, kwargs = None) ,)]
-    pub fn __new__(
-        py: Python,
-        args: Option<&Bound<PyTuple>>,
-        kwargs: Option<&Bound<PyDict>>,
-    ) -> Self {
-        let kw: Option<Py<PyDict>> = kwargs
-            .filter(|d| !d.is_empty())
-            .map(|d| d.into_py_dict_bound(py).unbind());
-        let arg: Option<Py<PyTuple>> = args.filter(|d| !d.is_empty()).map(|d| d.into_py(py));
+    #[pyo3(signature = (*args , **kwargs ) ,)]
+    pub fn __new__(py: Python, args: &Bound<PyTuple>, kwargs: Option<&Bound<PyDict>>) -> Self {
+        // let kw: Option<Py<PyDict>> = kwargs
+        //     .filter(|d| !d.is_empty())
+        //     .map(|d| d.into_py_dict_bound(py).unbind());
+        // let arg: Option<Py<PyTuple>> = args.filter(|d| !d.is_empty()).map(|d| d.into_py(py));
         Neuaral {
-            args: match arg {
-                Some(arg) => Some(arg),
-                None => None,
-            },
-            kwargs: match kw {
-                Some(kw) => Some(kw),
-                None => None,
-            },
+            // args: match arg {
+            //     Some(arg) => Some(arg),
+            //     None => None,
+            // },
+            // kwargs: match kw {
+            //     Some(kw) => Some(kw),
+            //     None => None,
+            // },
         }
     }
 
