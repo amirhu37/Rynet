@@ -140,10 +140,11 @@ impl Linear {
         };
         let class_name = slf.get_type().qualname().unwrap();
         format!(
-            "{}(in = {},out = {}, params={}) ",
+            "{}(in_features ={}, out_features ={}, is_bias={}, params={}) ",
             class_name,
             slf.borrow().shape.0,
             slf.borrow().shape.1,
+            slf.borrow().is_bias,
             slf.borrow().shape.0 * slf.borrow().shape.1 + bias_shape
         )
     }
