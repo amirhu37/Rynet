@@ -1,6 +1,6 @@
 #[allow(unused_variables)]
 use numpy::{IntoPyArray, PyArrayDyn};
-use pyo3::{Py, PyAny, PyResult, Python, Bound};
+use pyo3::{Bound, Py, PyAny, PyResult, Python};
 // use ActiovationFunction::*;
 use ndarray::ArrayD;
 use pyo3::prelude::*;
@@ -23,7 +23,7 @@ pub struct ActiovationFunction {
 #[pyfunction]
 pub fn sigmoid(x: Bound<PyAny>) -> NpNdarrayAs<f64, DynDim> {
     let func = |value: f64| 1.0 / (1.0 + (-value).exp());
-    let y: NpNdarrayAs<f64,DynDim> = apply_func(&x, func).unwrap();
+    let y: NpNdarrayAs<f64, DynDim> = apply_func(&x, func).unwrap();
     y
 }
 #[pyfunction]
@@ -39,14 +39,17 @@ pub fn relu(x: Bound<PyAny>) -> NpNdarrayAs<f64, DynDim> {
     y
 }
 #[pyfunction]
-pub fn softmax(x: Bound<PyAny>) -> NpNdarrayAs<f64,DynDim> {
+pub fn softmax(x: Bound<PyAny>) -> NpNdarrayAs<f64, DynDim> {
     let func = |value: f64| 1.0 / (1.0 + (-value).exp());
     let y: NpNdarrayAs<f64, DynDim> = apply_func(&x, func).unwrap();
     y
 }
 
 #[allow(dead_code)]
-pub fn apply_func(input: &Bound<PyAny>, func: impl Fn(f64) -> f64) -> PyResult<NpNdarrayAs<f64, DynDim>> {
+pub fn apply_func(
+    input: &Bound<PyAny>,
+    func: impl Fn(f64) -> f64,
+) -> PyResult<NpNdarrayAs<f64, DynDim>> {
     // Convert the input to a NumPy array
     let input_array: &PyArrayDyn<f64> = input.extract()?;
     let res: NpNdarrayAs<f64, DynDim> = Python::with_gil(|py| {
@@ -80,4 +83,3 @@ fn funcs() {
     #[allow(unused_variables)]
     let df_dsoftmax = |y: f64| y * (1.0 - y);
 }
-

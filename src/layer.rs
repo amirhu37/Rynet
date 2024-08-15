@@ -1,7 +1,6 @@
 use numpy::PyArrayDyn;
 use pyo3::prelude::*;
 
-
 /// A Python class representing a neural network layer.
 ///
 /// Attributes:

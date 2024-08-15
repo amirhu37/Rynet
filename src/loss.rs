@@ -55,23 +55,6 @@ impl MSELoss {
         });
         res
     }
-
-    // اضافه کردن تابع برای محاسبه مشتق
-    fn _derivative(
-        _slf: Bound<Self>,
-        predicted: &Bound<PyAny>,
-        targets: &Bound<PyAny>,
-    ) -> PyObject {
-        let res: Py<PyAny> = Python::with_gil(|py| {
-            let diff = predicted.sub(targets).unwrap();
-            diff.unbind()
-            // let result = diff
-            // .mul(2.0 / num_samples as f64, py.None()) // مشتق MSE نسبت به پیش‌بینی‌ها
-            // .unwrap();
-            // result.unbind()
-        });
-        res
-    }
 }
 
 /// ### 2. **Cross Entropy Loss (CrossEntropyLoss)**
@@ -130,11 +113,13 @@ impl CrossEntropyLoss {}
 pub struct BCELoss;
 
 #[pymethods]
+#[allow(unused_variables)]
 impl BCELoss {
     #[new]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         BCELoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -173,9 +158,12 @@ pub struct BCEWithLogitsLoss;
 #[pymethods]
 impl BCEWithLogitsLoss {
     #[new]
+    #[allow(unused_variables)]
+
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         BCEWithLogitsLoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -217,9 +205,11 @@ pub struct NLLLoss;
 #[pymethods]
 impl NLLLoss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         NLLLoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -260,9 +250,11 @@ pub struct KLDivLoss;
 #[pymethods]
 impl KLDivLoss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         KLDivLoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -302,9 +294,11 @@ pub struct L1Loss;
 #[pymethods]
 impl L1Loss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         L1Loss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -345,9 +339,11 @@ pub struct HingeEmbeddingLoss;
 #[pymethods]
 impl HingeEmbeddingLoss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         HingeEmbeddingLoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -388,9 +384,11 @@ pub struct SmoothL1Loss;
 #[pymethods]
 impl SmoothL1Loss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         SmoothL1Loss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -431,9 +429,11 @@ pub struct CosineEmbeddingLoss;
 #[pymethods]
 impl CosineEmbeddingLoss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         CosineEmbeddingLoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -475,9 +475,11 @@ pub struct MarginRankingLoss;
 #[pymethods]
 impl MarginRankingLoss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         MarginRankingLoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -517,9 +519,11 @@ pub struct MultiLabelMarginLoss;
 #[pymethods]
 impl MultiLabelMarginLoss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         MultiLabelMarginLoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -560,9 +564,11 @@ pub struct MultiLabelSoftMarginLoss;
 #[pymethods]
 impl MultiLabelSoftMarginLoss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         MultiLabelSoftMarginLoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -602,9 +608,11 @@ pub struct SoftMarginLoss;
 #[pymethods]
 impl SoftMarginLoss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         SoftMarginLoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()
@@ -648,9 +656,11 @@ pub struct TripletMarginLoss;
 #[pymethods]
 impl TripletMarginLoss {
     #[new]
+    #[allow(unused_variables)]
     fn __new__<'py>(py: Python, reduction: &str) -> Self {
         TripletMarginLoss {}
     }
+    #[allow(unused_variables)]
     fn __call__(slf: Bound<Self>, predicted: &Bound<PyAny>, targets: &Bound<PyAny>) -> PyObject {
         let res = Python::with_gil(|py| {});
         todo!()

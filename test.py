@@ -2,7 +2,7 @@ import os
 
 from rnet import Linear, Neuaral, Layer 
 
-from rnet.rnet import MSELoss 
+# from rnet.rnet import MSELoss 
 # print(nnet.__dict__)
 import numpy as np
 

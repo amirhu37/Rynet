@@ -1,6 +1,6 @@
 use pyo3::{
     prelude::*,
-    types::{IntoPyDict, PyDict, PyTuple},
+    types::{PyDict, PyTuple},
 };
 
 use pyo3::Bound;
@@ -23,6 +23,7 @@ pub struct Neuaral {
 impl Neuaral {
     #[new]
     #[pyo3(signature = (*args , **kwargs ) ,)]
+    #[allow(unused_variables)]
     pub fn __new__(py: Python, args: &Bound<PyTuple>, kwargs: Option<&Bound<PyDict>>) -> Self {
         // let kw: Option<Py<PyDict>> = kwargs
         //     .filter(|d| !d.is_empty())

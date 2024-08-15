@@ -1,10 +1,10 @@
-use crate::{layer::Layers, random_bias, random_weight, ArrayAs,  Ndarray, OneDim, TwoDim};
-use ndarray::{Array1, ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
+use crate::{layer::Layers, random_bias, random_weight, ArrayAs, Ndarray, OneDim, TwoDim};
+use ndarray::{Array1, ArrayBase, Dim, OwnedRepr};
 
-use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, Ix2, PyArray, PyArray1, PyArray2, PyArrayDyn};
+use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, PyArray1, PyArray2, PyArrayDyn};
 use pyo3::{
     prelude::*,
-    types::{IntoPyDict, PyDict, PyTuple},
+    types::{IntoPyDict, PyDict},
 };
 /// Type alias for a 1-dimensional ndarray with owned data and dynamic dimensions.
 
@@ -81,8 +81,7 @@ impl Linear {
         let random_weight: ArrayAs<f32, TwoDim> =
             random_weight(in_features.into(), out_features.into()).unwrap();
         let random_bias: Ndarray<[usize; 1]> = if is_bias {
-            let r_bias: ArrayAs<f32, OneDim> =
-                random_bias(out_features.into()).unwrap();
+            let r_bias: ArrayAs<f32, OneDim> = random_bias(out_features.into()).unwrap();
             r_bias
         } else {
             let zero_bias: ArrayBase<OwnedRepr<f32>, Dim<[usize; 1]>> = Array1::zeros(out_features);
