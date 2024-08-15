@@ -138,7 +138,7 @@ impl Linear {
         } else {
             slf.borrow().shape.1
         };
-        let class_name = slf.get_type().qualname().unwrap();
+        let class_name: String = slf.get_type().qualname().unwrap();
         format!(
             "{}(in_features ={}, out_features ={}, is_bias={}, params={}) ",
             class_name,
@@ -155,30 +155,4 @@ impl Linear {
         Ok(format!("{}", class_name))
     }
 
-    #[getter]
-    fn __doc__(&self) -> String {
-        format!(
-            "
-        linear Layer. linear Layer. linear Layer. 
-        "
-        )
-    }
-    fn __iter__(slf: &Bound<Self>) -> PyObject {
-        let class_name = slf.get_type().qualname().unwrap();
-        Python::with_gil(|py| {
-            // let list = PyList::new_bound(py, slf.borrow().weights.clone().to_object(py));
-            let locals = [
-                ("weighs", slf.borrow().weight.clone()),
-                ("self", class_name.to_object(py)),
-                ("bias", slf.borrow().bias.clone()),
-            ]
-            .into_py_dict_bound(py);
-            let result = py
-                .eval_bound("list(self.__dict__.values())", None, Some(&locals))
-                .unwrap()
-                .unbind();
-            let py_obj: PyObject = result.downcast_bound(py).unwrap().clone().unbind();
-            py_obj
-        })
-    }
 }
