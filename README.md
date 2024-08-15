@@ -10,8 +10,8 @@ the goal was never building the whole framework. my attemption was learing how t
 - 'loss.rs' : all loss functions. never finished.
 - 'optimizers.rs' : all optimizers. never finished.
 
-how to use it?
-for `Neural` like this:
+how to use it ?
+</br>for `Neural` like this:
 ```python
 class SimpleNN(Neuaral):
     def __init__(self):
