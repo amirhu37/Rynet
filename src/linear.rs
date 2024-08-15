@@ -1,22 +1,13 @@
-use crate::{layer::Layers, random_bias, random_weight, DnArrayAs};
+use crate::{layer::Layers, random_bias, random_weight, ArrayAs,  Ndarray, OneDim, TwoDim};
 use ndarray::{Array1, ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
 
-use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, PyArray, PyArrayDyn};
+use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, Ix2, PyArray, PyArray1, PyArray2, PyArrayDyn};
 use pyo3::{
     prelude::*,
     types::{IntoPyDict, PyDict, PyTuple},
 };
 /// Type alias for a 1-dimensional ndarray with owned data and dynamic dimensions.
-pub type Ndarray<Dimen> = ArrayBase<OwnedRepr<f32>, Dim<Dimen>>;
-// pub type d1array = ArrayBase<OwnedRepr<f32>, Dim<IxDynImpl>>;
 
-/// Type alias for a 2-dimensional ndarray with owned data, where each element is a vector of vectors of f32.
-pub type NDArray2 = ArrayBase<OwnedRepr<Vec<Vec<f32>>>, Dim<[usize; 2]>>;
-/// Type alias for a Python object that wraps a dynamically-sized ndarray of f32.
-pub type Object = Py<PyArrayDyn<f32>>;
-pub type BoundedArray<'py> = Bound<'py, PyArray<f32, IxDyn>>;
-pub type PyNdArray<'py, Type, Dimension> = Bound<'py, PyArray<Type, Dimension>>;
-pub type MultiDim = IxDyn;
 ///# A Python class representing a linear layer in a neural network.
 ///
 ///## Attributes:
@@ -87,11 +78,11 @@ impl Linear {
             None => false,
         };
 
-        let random_weight: Ndarray<IxDynImpl> =
-            random_weight(in_features.into(), out_features.into());
+        let random_weight: ArrayAs<f32, TwoDim> =
+            random_weight(in_features.into(), out_features.into()).unwrap();
         let random_bias: Ndarray<[usize; 1]> = if is_bias {
-            let r_bias: ArrayBase<OwnedRepr<f32>, Dim<[usize; 1]>> =
-                random_bias(out_features.into());
+            let r_bias: ArrayAs<f32, OneDim> =
+                random_bias(out_features.into()).unwrap();
             r_bias
         } else {
             let zero_bias: ArrayBase<OwnedRepr<f32>, Dim<[usize; 1]>> = Array1::zeros(out_features);
@@ -127,10 +118,10 @@ impl Linear {
 
     fn __call__(slf: &Bound<Self>, py: Python<'_>, value: &Bound<PyAny>) -> PyResult<PyObject> {
         //cast `value` in to ndarray
-        let value: &PyArrayDyn<npy_float> = value.extract()?;
-        let value: DnArrayAs<npy_float> = value.to_owned_array();
-        let weight: &PyArrayDyn<npy_float> = slf.borrow().weight.extract(py)?;
-        let weight: DnArrayAs<npy_float> = weight.to_owned_array().t().to_owned();
+        let value: &PyArray1<npy_float> = value.extract()?;
+        let value: ArrayAs<npy_float, OneDim> = value.to_owned_array();
+        let weight: &PyArray2<npy_float> = slf.borrow().weight.extract(py)?;
+        let weight: ArrayAs<npy_float, TwoDim> = weight.to_owned_array().t().to_owned();
 
         let result: Bound<PyArrayDyn<npy_float>> = dot_bound(
             &value.into_pyarray_bound(py),

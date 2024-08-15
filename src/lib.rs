@@ -14,8 +14,8 @@ use linear::Linear;
 use loss::*;
 use neuaral::Neuaral;
 
-use ndarray::{Array1, ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
-use numpy::{ PyArray, PyArrayDyn};
+use ndarray::{Array1, Array2, ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
+use numpy::{ PyArray, PyArrayDyn, Ix2};
 #[allow(unused_imports)]
 use pyo3::Bound as PyBound;
 use pyo3::*;
@@ -26,16 +26,22 @@ use pyo3::{
 };
 
 use rand::Rng;
+pub type DynDim = Dim<IxDynImpl>;
+pub type OneDim  = Dim<[usize; 1]>;
+pub type  TwoDim = Dim<[usize; 2]>;
+pub type  ThreeDim = Dim<[usize; 3]>;
 
-pub type NpNdarrayAs<T> = Py<PyArray<T, Dim<IxDynImpl>> >;
+pub type NpNdarrayAs<T, D> = Py<PyArray<T, D > >;
 
-pub type DnArrayAs<T> = ArrayBase<OwnedRepr<T>, Dim<IxDynImpl>>;
-pub type N1ArrayAs<T> = ArrayBase<OwnedRepr<T>, Dim<[usize; 1]>>;
-pub type N2ArrayAs<T> = ArrayBase<OwnedRepr<T>, Dim<[usize; 2]>>;
-pub type N3ArrayAs<T> = ArrayBase<OwnedRepr<T>, Dim<[usize; 3]>>;
+pub type ArrayAs<T, D> = ArrayBase<OwnedRepr<T>, D >;
 
-pub type BoundedArrayAs<'py, T> = &'py PyBound<'py, DnArrayAs<T>>;
 pub type Ndarray<Dimen> = ArrayBase<OwnedRepr<f32>, Dim<Dimen>>;
+// pub type d1array = ArrayBase<OwnedRepr<f32>, Dim<IxDynImpl>>;
+
+/// Type alias for a 2-dimensional ndarray with owned data, where each element is a vector of vectors of f32.
+
+
+pub type BoundedArrayAs<'py, T> = &'py PyBound<'py, ArrayAs<T, DynDim> >;
 /// Type alias for a 2-dimensional ndarray with owned data, where each element is a vector of vectors of f32.
 pub type NDArray2 = ArrayBase<OwnedRepr<Vec<Vec<f32>>>, Dim<[usize; 2]>>;
 /// Type alias for a Python object that wraps a dynamically-sized ndarray of f32.
@@ -47,9 +53,9 @@ pub type MultiDim = IxDyn;
 
 
 
-fn random_weight(n: usize, m: usize) -> PyResult<DnArrayAs<f32>> {
+fn random_weight(n: usize, m: usize) -> PyResult<ArrayAs<f32, TwoDim >> {
     let mut rng = rand::thread_rng();
-    let mut array: DnArrayAs<f32> = ArrayD::zeros(IxDyn(&[n, m]));
+    let mut array: ArrayAs<f32, TwoDim> = Array2::zeros(Ix2(n, m) );
     // array.t()
     for i in 0..n {
         for j in 0..m {
@@ -58,10 +64,10 @@ fn random_weight(n: usize, m: usize) -> PyResult<DnArrayAs<f32>> {
     }
     Ok(array)
 }
-fn random_bias<'py>(n: usize) -> PyResult<N1ArrayAs<f32>> {
+fn random_bias<'py>(n: usize) -> PyResult<ArrayAs<f32, OneDim> > {
     let mut rng = rand::thread_rng();
 
-    let mut array: N1ArrayAs<f32> = Array1::zeros(n);
+    let mut array: ArrayAs<f32, OneDim> = Array1::zeros(n);
     for i in 0..n {
         array[i] = rng.gen::<f32>();
     }
