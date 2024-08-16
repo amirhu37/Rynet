@@ -1,0 +1,9 @@
+import rnet
+
+
+__all__ = rnet.__doc__
+
+class Tensor:
+    def __init__(self, data, requires_grad=False):...
+    # def __str__(self) -> any:...
+    # def __repr__(self) -> any:...

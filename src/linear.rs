@@ -1,10 +1,12 @@
-use crate::{layer::Layers, random_bias, random_weight, ArrayAs, Ndarray, OneDim, TwoDim};
-use ndarray::{Array1, ArrayBase, Dim, OwnedRepr};
+use std::result;
 
-use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, PyArray1, PyArray2, PyArrayDyn};
-use pyo3::{
+use crate::{add_class, layer::Layers, random_bias, random_weight, tensor::Tensor, ArrayAs, DynDim, Ndarray, OneDim, TwoDim};
+use ndarray::{Array1, ArrayBase, ArrayD, Dim, OwnedRepr};
+
+use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, IxDyn, PyArray1, PyArray2, PyArrayDyn};
+use pyo3::{Bound as PyBound, 
     prelude::*,
-    types::{IntoPyDict, PyDict},
+    types::PyDict,
 };
 /// Type alias for a 1-dimensional ndarray with owned data and dynamic dimensions.
 
@@ -24,8 +26,8 @@ use pyo3::{
 #[pyclass(
     module = "layer",
     name = "Linear",
-    unsendable,
     extends= Layers,
+    unsendable,
     subclass,
     sequence,
     dict,
@@ -35,9 +37,9 @@ use pyo3::{
 
 pub struct Linear {
     /// The weights of the linear layer.
-    pub weight: PyObject,
+    pub weight: Tensor,
     /// The bias of the linear layer.
-    pub bias: PyObject,
+    pub bias: Tensor,
     /// Indicates whether the layer uses a bias term.
     pub is_bias: bool,
     /// Indicates whether the layer is trainable.
@@ -62,7 +64,11 @@ impl Linear {
     /// Returns:
     ///     PyResult<(Self, Layers)>: A new instance of the Linear class and its base Layers class.
     #[new]
-    #[pyo3(signature = (in_features , out_features, is_bias = true , trainable = true,  *args , **kwargs  ))]
+    #[pyo3(
+        signature = (in_features , out_features, is_bias = true , trainable = true,  *args , **kwargs  ),
+        text_signature = "(in_features : int , out_features :int , is_bias: bool = true , trainable: bool = true,  *args , **kwargs  )"
+
+)]
     #[allow(unused_variables)]
     pub fn __new__<'py>(
         py: Python,
@@ -78,20 +84,20 @@ impl Linear {
             None => false,
         };
 
-        let random_weight: ArrayAs<f32, TwoDim> =
-            random_weight(in_features.into(), out_features.into()).unwrap();
-        let random_bias: Ndarray<[usize; 1]> = if is_bias {
-            let r_bias: ArrayAs<f32, OneDim> = random_bias(out_features.into()).unwrap();
+        let random_weight: ArrayAs<f32, DynDim> =
+            random_weight(in_features.into(), out_features.into()).unwrap().into();
+        let random_bias: ArrayAs<f32, DynDim> = if is_bias {
+            let r_bias: ArrayAs<f32, DynDim> = random_bias(out_features.into()).unwrap().into();
             r_bias
         } else {
-            let zero_bias: ArrayBase<OwnedRepr<f32>, Dim<[usize; 1]>> = Array1::zeros(out_features);
+            let zero_bias :ArrayAs<f32, DynDim>= ArrayD::zeros(IxDyn(&[out_features,0]));
             zero_bias
         };
 
         let result = (
             Self {
-                weight: random_weight.into_pyarray_bound(py).to_owned().into(),
-                bias: random_bias.into_pyarray_bound(py).to_owned().into(),
+                weight: random_weight.into(),
+                bias: random_bias.into(),
                 is_bias: is_bias,
                 trainable: trainable.unwrap_or(true),
                 shape: (in_features, out_features),
@@ -115,21 +121,24 @@ impl Linear {
         return dict.unbind();
     }
 
-    fn __call__(slf: &Bound<Self>, py: Python<'_>, value: &Bound<PyAny>) -> PyResult<PyObject> {
+    fn __call__(slf: &Bound<Self>, py: Python<'_>, value: &Bound<Tensor>) -> PyResult<Tensor> {
         //cast `value` in to ndarray
-        let value: &PyArray1<npy_float> = value.extract()?;
-        let value: ArrayAs<npy_float, OneDim> = value.to_owned_array();
-        let weight: &PyArray2<npy_float> = slf.borrow().weight.extract(py)?;
-        let weight: ArrayAs<npy_float, TwoDim> = weight.to_owned_array().t().to_owned();
+        // let value: &PyArray1<npy_float> = value.extract()?;
+        // let value: ArrayAs<npy_float, OneDim> = value.to_owned_array();
+        // let weight: &PyArray2<npy_float> = slf.borrow().weight.extract(py)?;
+        // let weight: ArrayAs<npy_float, TwoDim> = weight.to_owned_array().t().to_owned();
+        let value : Tensor = value.clone().unbind().extract(py).unwrap() ;
+        let doted = value.dot(&slf.borrow().weight.transpose(py), py);
+        
+        // let result: Bound<PyArrayDyn<npy_float>> = dot_bound(
+        //     &value.into_pyarray_bound(py),
+        //     &weight.into_pyarray_bound(py),
+        // )
+        // .unwrap();
 
-        let result: Bound<PyArrayDyn<npy_float>> = dot_bound(
-            &value.into_pyarray_bound(py),
-            &weight.into_pyarray_bound(py),
-        )
-        .unwrap();
-
-        let result = result.add(slf.borrow().bias.to_owned())?;
-        Ok(result.to_object(py))
+        let result = doted.add(&slf.borrow().bias, py);
+        println!("{}", result);
+        Ok(result)
     }
 
     fn __str__(slf: &Bound<Self>) -> String {
@@ -155,4 +164,16 @@ impl Linear {
         Ok(format!("{}", class_name))
     }
 
+}
+
+
+
+
+
+#[pymodule]
+#[pyo3(name = "linear")]
+pub fn linear_module(_py: Python, m: &PyBound<PyModule>) -> PyResult<()> {
+    add_class!(m, Linear);
+    // m.add_function(wrap_pyfunction!(function_in_module1, m)?)?;
+    Ok(())
 }

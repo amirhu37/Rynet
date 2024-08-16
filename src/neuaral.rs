@@ -1,9 +1,11 @@
-use pyo3::{
+use pyo3::{Bound as PyBound,
     prelude::*,
     types::{PyDict, PyTuple},
 };
 
 use pyo3::Bound;
+
+use crate::add_class;
 
 #[allow(unconditional_recursion)]
 #[derive(
@@ -76,4 +78,13 @@ impl Neuaral {
         let class_name = slf.get_type().qualname()?;
         Ok(format!("{}", class_name))
     }
+}
+
+
+#[pymodule]
+#[pyo3(name = "neuaral")]
+fn neuaral_module(_py: Python, m: &PyBound<PyModule>) -> PyResult<()> {
+    add_class!(m, Neuaral);
+    // m.add_function(wrap_pyfunction!(function_in_module1, m)?)?;
+    Ok(())
 }
