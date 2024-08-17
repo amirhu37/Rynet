@@ -82,6 +82,16 @@ fn random_bias<'py>(n: usize) -> PyResult<Tensor > {
     Ok(array)
 }
 
+fn zero_bias<'py>(n: usize) -> PyResult<Tensor > {
+    let mut array: ArrayAs<f32, DynDim> = ArrayD::zeros(IxDyn(&[n,0]));    
+    let y = Python::with_gil(|py|{
+        let array = Tensor::__new__(&array.into_pyarray_bound(py), Some(false));
+        array
+    });
+
+    Ok(y)
+}
+
 
 pub fn _py_run(value: &Bound<PyAny>, command: &str) -> PyResult<Py<PyDict>> {
     Python::with_gil(|py| {

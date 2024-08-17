@@ -16,7 +16,7 @@ from tools import relu
 
 
 linear_layer = lr.Linear(3, 2,True)
-# print(linear_layer.__dict__)
+print(linear_layer.weight )
 linear_layer1 = lr.Linear(in_features=3, out_features=2, is_bias=False)
 
 
@@ -59,7 +59,7 @@ print(type(tensor))
 y = np.random.randint(0,3,20)
 print(y)
 y_c = np.eye(20,3)[y]
-print(y_c)
+# print(y_c)
 
 
 
