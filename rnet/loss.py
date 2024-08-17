@@ -1,7 +1,7 @@
 from typing import Any
 
 
-class MSMSELoss:
+class MSELoss:
     reduction : str = "mean"
     def __init__(self, reduction : str = "mean") -> None:
         self.reduction = reduction

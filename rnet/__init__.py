@@ -1,4 +1,5 @@
-import rnet 
+import rnet
+# from rntet import rnet
 # from rnet import Tensor
 
 __all__ = rnet.__doc__

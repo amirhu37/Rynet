@@ -7,9 +7,9 @@ pub mod loss;
 pub mod optimizers;
 pub mod tools;
 
-use layer::Layers;
+// use layer::Layers;
 // use nn::Linear;
-use loss::*;
+// use loss::*;
 // use neuaral::Neuaral;
 
 use ndarray::{Array1, Array2, ArrayBase, Dim, IxDyn, IxDynImpl, OwnedRepr};
@@ -112,9 +112,9 @@ pub fn rnet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     let module2 = PyModule::new_bound(py, "layermodule")?;
     let module3 = PyModule::new_bound(py, "lossmodule")?;
    
-    m.add_submodule(&module1);
-    m.add_submodule(&module2);
-    m.add_submodule(&module3);
+    let _ = m.add_submodule(&module1);
+    let _ = m.add_submodule(&module2);
+    let _ = m.add_submodule(&module3);
 
 
     // add_class!(m, Linear, Neuaral, Layers, ActiovationFunction, MSELoss);
