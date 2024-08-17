@@ -1,13 +1,9 @@
-use std::clone;
 use std::fmt::{Display, Formatter};
-use std::ops::{Add, Deref, Mul};
+use std::ops::{Add, Mul};
 
-use ndarray::linalg::Dot;
-use ndarray::{Array, ArrayBase, ArrayViewD, Dim, IxDynImpl, OwnedRepr};
-use numpy::{dot_bound, IntoPyArray, PyArray, PyArrayMethods, ToPyArray};
-use numpy::{npyffi::npy_float, IxDyn, PyArrayDyn};
+use numpy::{dot_bound, IntoPyArray, ToPyArray};
+use numpy::{npyffi::npy_float, PyArrayDyn};
 use pyo3::prelude::*;
-use pyo3::types::PyTuple;
 use pyo3::Bound as PyBound;
 use crate::{ArrayAs, DynDim, OneDim, ThreeDim, TwoDim};
 
@@ -37,9 +33,9 @@ impl TensorTrait for ArrayAs<npy_float, ThreeDim> {}
 // #[derive(FromPyObject)]
 pub struct Tensor {
     #[pyo3(get)]
-    value: Py<PyArrayDyn<npy_float>>, 
+    pub value: Py<PyArrayDyn<npy_float>>, 
     #[pyo3(get)]
-    grad : bool
+    pub grad : bool
 }
 
 
@@ -234,7 +230,7 @@ impl Mul for Tensor {
 impl Add for Tensor {
     type Output = Tensor;
     fn add(self, rhs: Self) -> Self::Output {
-        Python::with_gil(|py|{
+        Python::with_gil(|_py|{
             self.add(rhs)
             })
         }

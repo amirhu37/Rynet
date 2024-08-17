@@ -15,10 +15,6 @@ from rntet.loss import MSMSELoss
 from tools import relu
 
 
-linear_layer = lr.Linear(3, 2,True)
-print(linear_layer.weight )
-linear_layer1 = lr.Linear(in_features=3, out_features=2, is_bias=False)
-
 
 
 class SimpleNN(Neuaral):
@@ -54,6 +50,12 @@ x = np.random.rand(20,3)
 tensor = Tensor(x)
 print(tensor)
 print(type(tensor))
+
+
+linear_layer = lr.Linear(3, 2,True)
+print(linear_layer.weight )
+linear_layer1 = lr.Linear(in_features=3, out_features=2, is_bias=False)
+
 
 
 y = np.random.randint(0,3,20)

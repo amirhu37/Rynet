@@ -1,10 +1,7 @@
-use std::result;
 
-use crate::{add_class, layer::Layers, random_bias, random_weight, tensor::Tensor, zero_bias, ArrayAs, DynDim, Ndarray, OneDim, TwoDim};
-use ndarray::{Array1, ArrayBase, ArrayD, Dim, IxDynImpl, OwnedRepr};
+use crate::{add_class, random_bias, random_weight, tensor::Tensor, zero_bias};
 
-use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, IxDyn, PyArray1, PyArray2, PyArrayDyn};
-use pyo3::{ffi::getter, prelude::*, types::PyDict, Bound as PyBound
+use pyo3::{prelude::*, types::PyDict, Bound as PyBound
 };
 /// Type alias for a 1-dimensional ndarray with owned data and dynamic dimensions.
 
@@ -134,7 +131,7 @@ impl Linear {
         // let weight: ArrayAs<npy_float, TwoDim> = weight.to_owned_array().t().to_owned();
         let value:Tensor = value.clone().unbind().extract(py).unwrap() ;
         // .extract(py).unwrap() ;
-        // let doted = value. ;
+        let doted = value.dot(&slf.borrow().weight, py) ;
         
         // let result: Bound<PyArrayDyn<npy_float>> = dot_bound(
         //     &value.into_pyarray_bound(py),
@@ -142,18 +139,18 @@ impl Linear {
         // )
         // .unwrap();
 
-        // let result = doted.add(&slf.borrow().bias, py);
+        let result = doted.add(&slf.borrow().bias, py);
         // println!("{}", result);
-        // Ok(result)
-        todo!()
+        Ok(result)
+        // todo!()
     }
 
     #[getter]
-    pub fn get_weight(slf: &Bound<Self>) -> PyResult<Tensor>{
+    pub fn weight(slf: &Bound<Self>) -> PyResult<Tensor>{
         Ok(slf.borrow().weight.clone())
     }
     #[getter]
-    pub fn get_bias(slf: &Bound<Self>) -> Tensor{
+    pub fn bias(slf: &Bound<Self>) -> Tensor{
         slf.borrow().bias.clone()
     }
     fn __str__(slf: &Bound<Self>) -> String {

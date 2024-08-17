@@ -11,8 +11,8 @@ pub mod tensor;
 /// import files and modules
 use functions::*;
 
-use ndarray::{Array1, Array2, ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
-use numpy::{IntoPyArray, Ix2, PyArray, PyArrayDyn};
+use ndarray::{ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
+use numpy::{IntoPyArray, PyArray, PyArrayDyn};
 #[allow(unused_imports)]
 use pyo3::Bound as PyBound;
 use pyo3::*;
@@ -83,7 +83,7 @@ fn random_bias<'py>(n: usize) -> PyResult<Tensor > {
 }
 
 fn zero_bias<'py>(n: usize) -> PyResult<Tensor > {
-    let mut array: ArrayAs<f32, DynDim> = ArrayD::zeros(IxDyn(&[n,0]));    
+    let array: ArrayAs<f32, DynDim> = ArrayD::zeros(IxDyn(&[n,0]));    
     let y = Python::with_gil(|py|{
         let array = Tensor::__new__(&array.into_pyarray_bound(py), Some(false));
         array
