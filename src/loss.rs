@@ -1,6 +1,8 @@
 // Loss functions, also known as cost functions or objective functions, measure how well a model's predictions match the actual target values. They are crucial for training machine learning models, as they provide the feedback signal used to adjust the model's parameters during optimization.
 use pyo3::prelude::*;
 
+use crate::add_class;
+
 /// ### 1. **Mean Squared Error Loss (MSELoss)**
 /// Measures the average squared difference between predicted and actual values. Commonly used in regression tasks.
 /// ```
@@ -670,3 +672,10 @@ impl TripletMarginLoss {
 // ### Common Methods for Loss Functions
 // - **`forward(input, target)`**: Computes the loss between the input and the target. This method is called internally when you use `criterion(input, target)`.
 // - **`__call__(input, target)`**: Calls the `forward` method and returns the loss.
+#[pymodule]
+#[pyo3(name = "loss")]
+pub fn lossmodule(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+    add_class!(m, MSELoss);
+
+    Ok(())
+}

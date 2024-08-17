@@ -1,18 +1,16 @@
 /// interduce file and modules
 pub mod functions;
 pub mod layer;
-pub mod linear;
+pub mod nn;
 pub mod loss;
-pub mod neuaral;
+// pub mod neuaral;
 pub mod optimizers;
 pub mod tools;
 
-/// import files and modules
-use functions::*;
 use layer::Layers;
-use linear::Linear;
+// use nn::Linear;
 use loss::*;
-use neuaral::Neuaral;
+// use neuaral::Neuaral;
 
 use ndarray::{Array1, Array2, ArrayBase, Dim, IxDyn, IxDynImpl, OwnedRepr};
 use numpy::{Ix2, PyArray, PyArrayDyn};
@@ -88,6 +86,7 @@ macro_rules! add_class {
 
     };
 }
+#[allow(unused_macros)]
 macro_rules! add_function {
     ($module : ident , $($function : ident), +) => {
         $(
@@ -95,12 +94,32 @@ macro_rules! add_function {
         )+
     };
 }
+
+
+
+
+
+
+
+
+
+
+
 #[pymodule]
 #[pyo3(name = "rnet")]
-pub fn nnet(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
-    add_class!(m, Linear, Neuaral, Layers, ActiovationFunction, MSELoss);
+pub fn rnet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
+    let module1 = PyModule::new_bound(py, "nnmodule")?;
+    let module2 = PyModule::new_bound(py, "layermodule")?;
+    let module3 = PyModule::new_bound(py, "lossmodule")?;
+   
+    m.add_submodule(&module1);
+    m.add_submodule(&module2);
+    m.add_submodule(&module3);
+
+
+    // add_class!(m, Linear, Neuaral, Layers, ActiovationFunction, MSELoss);
     // add functions
-    add_function!(m, softmax, sigmoid, tanh, relu);
+    // add_function!(m, softmax, sigmoid, tanh, relu);
     // add_function!(m, cross_entropy);
     // add_function!(m, mse);
     Ok(())

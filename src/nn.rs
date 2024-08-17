@@ -1,10 +1,11 @@
-use crate::{layer::Layers, random_bias, random_weight, ArrayAs, Ndarray, OneDim, TwoDim};
+use crate::{add_class, random_bias, random_weight, ArrayAs, Ndarray, OneDim, TwoDim};
 use ndarray::{Array1, ArrayBase, Dim, OwnedRepr};
+use pyo3::{types::PyTuple, Bound};
 
 use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, PyArray1, PyArray2, PyArrayDyn};
 use pyo3::{
     prelude::*,
-    types::{IntoPyDict, PyDict},
+    types::PyDict,
 };
 /// Type alias for a 1-dimensional ndarray with owned data and dynamic dimensions.
 
@@ -22,10 +23,10 @@ use pyo3::{
 ///*     set_all (bool): Indicates that all attributes are settable.
 // #[derive(FromPyObject)]
 #[pyclass(
-    module = "layer",
+    module = "nn",
     name = "Linear",
     unsendable,
-    extends= Layers,
+    // extends= Layers,
     subclass,
     sequence,
     dict,
@@ -72,7 +73,7 @@ impl Linear {
         trainable: Option<bool>,
         args: &Bound<'_, PyAny>,
         kwargs: Option<&Bound<'_, PyAny>>,
-    ) -> PyResult<(Self, Layers)> {
+    ) -> PyResult<Self> {
         let is_bias = match is_bias {
             Some(is_bias) => is_bias,
             None => false,
@@ -88,16 +89,14 @@ impl Linear {
             zero_bias
         };
 
-        let result = (
+        let result = 
             Self {
                 weight: random_weight.into_pyarray_bound(py).to_owned().into(),
                 bias: random_bias.into_pyarray_bound(py).to_owned().into(),
                 is_bias: is_bias,
                 trainable: trainable.unwrap_or(true),
                 shape: (in_features, out_features),
-            },
-            Layers,
-        );
+            };
         Ok(result)
     }
 
@@ -155,4 +154,66 @@ impl Linear {
         Ok(format!("{}", class_name))
     }
 
+}
+
+
+
+
+#[allow(unconditional_recursion)]
+#[derive(
+    Debug,
+    //  Display,
+    Clone,
+)]
+#[pyclass(module = "nn", unsendable, get_all, set_all, subclass, sequence, dict)]
+// #[pyo3(text_signature = "$cls(*args , **kwargs)" )]
+// #[display(fmt = "")]
+pub struct Neuaral {}
+#[pymethods]
+impl Neuaral {
+    #[new]
+    #[pyo3(signature = (*args , **kwargs ) ,)]
+    #[allow(unused_variables)]
+    pub fn __new__(py: Python, args: &Bound<PyTuple>, kwargs: Option<&Bound<PyDict>>) -> Self {
+        Neuaral {  } }
+
+    fn parameters<'py>(slf: &Bound<Self>, _py: Python<'py>) -> Py<PyDict> {
+        let dict = slf
+            .getattr("__dict__")
+            .unwrap()
+            .downcast::<PyDict>()
+            .unwrap()
+            .clone() ;
+        let _binding = dict.as_gil_ref().downcast::<PyDict>().unwrap();
+        return dict.unbind();
+    }
+
+    pub fn forward(&self, x: PyObject) -> PyResult<PyObject> {
+        // TODO
+        return Ok(x);
+    }
+    pub fn __call__(&self, x: PyObject) -> PyObject {
+        self.forward(x).expect("call error")
+    }
+    fn __str__(slf: &Bound<Self>) -> PyResult<String> {
+        let class_name: String = slf.get_type().qualname()?;
+
+        Ok(format!("{}", class_name))
+    }
+
+    fn __repr__(slf: &Bound<Self>) -> PyResult<String> {
+        // This is the equivalent of `self.__class__.__name__` in Python.
+        let class_name = slf.get_type().qualname()?;
+        Ok(format!("{}", class_name))
+    }
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////4
+////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////// 
+#[pymodule]
+#[pyo3(name = "nn")]
+pub fn nnmodule(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+    add_class!(m, Linear, Neuaral);
+
+    Ok(())
 }

@@ -1,6 +1,8 @@
 use numpy::PyArrayDyn;
 use pyo3::prelude::*;
 
+use crate::add_class;
+
 /// A Python class representing a neural network layer.
 ///
 /// Attributes:
@@ -65,15 +67,20 @@ impl Layers {
         Ok(format!("Layers()"))
     }
 
-    /// Returns the docstring of the Layers class.
-    ///
-    /// Returns:
-    ///     String: The docstring of the Layers class.
-    #[getter]
-    fn __doc__(&self) -> String {
-        "
-        linear Layer. linear Layer. linear Layer.
-        "
-        .to_string()
-    }
+
+    // #[getter]
+    // fn __doc__(&self) -> String {
+    //     "
+    //     linear Layer. linear Layer. linear Layer.
+    //     "
+    //     .to_string()
+    // }
+}
+
+#[pymodule]
+#[pyo3(name = "layer")]
+pub fn layermodule(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+    add_class!(m, Layers);
+
+    Ok(())
 }
