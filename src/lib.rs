@@ -1,30 +1,29 @@
 /// interduce file and modules
 pub mod functions;
 pub mod layer;
-pub mod linear;
+pub mod nn;
 pub mod loss;
-pub mod neuaral;
+// pub mod neuaral;
 pub mod optimizers;
 pub mod tools;
-pub mod tensor;
 
-/// import files and modules
-use functions::*;
+use layer::Layers;
+// use nn::Linear;
+use loss::*;
+// use neuaral::Neuaral;
 
-use ndarray::{ArrayBase, ArrayD, Dim, IxDyn, IxDynImpl, OwnedRepr};
-use numpy::{IntoPyArray, PyArray, PyArrayDyn};
+use ndarray::{Array1, Array2, ArrayBase, Dim, IxDyn, IxDynImpl, OwnedRepr};
+use numpy::{Ix2, PyArray, PyArrayDyn};
 #[allow(unused_imports)]
 use pyo3::Bound as PyBound;
 use pyo3::*;
-use pyo3::{ 
+use pyo3::{
     pymodule,
     types::{IntoPyDict, PyDict, PyModule},
     Py, PyResult, Python,
 };
 
 use rand::Rng;
-use tensor::Tensor;
-
 pub type DynDim = Dim<IxDynImpl>;
 pub type OneDim = Dim<[usize; 1]>;
 pub type TwoDim = Dim<[usize; 2]>;
@@ -48,50 +47,26 @@ pub type BoundedArray<'py> = PyBound<'py, PyArray<f32, IxDyn>>;
 pub type PyNdArray<'py, Type, Dimension> = PyBound<'py, PyArray<Type, Dimension>>;
 pub type MultiDim = IxDyn;
 
-fn random_weight(n: usize, m: usize) -> PyResult<Tensor > {
+fn random_weight(n: usize, m: usize) -> PyResult<ArrayAs<f32, TwoDim>> {
     let mut rng = rand::thread_rng();
-    let mut array: ArrayAs<f32, DynDim> = ArrayD::zeros( IxDyn(&[n,m]) );
+    let mut array: ArrayAs<f32, TwoDim> = Array2::zeros(Ix2(n, m));
     // array.t()
     for i in 0..n {
         for j in 0..m {
             array[[i, j]] = rng.gen::<f32>();
         }
     }
-    let array = Python::with_gil(|py|{
-        let array = Tensor::__new__(array.into_pyarray_bound(py).unbind(), Some(false));
-        array
-    });
-
     Ok(array)
 }
-
-
-fn random_bias<'py>(n: usize) -> PyResult<Tensor > {
+fn random_bias<'py>(n: usize) -> PyResult<ArrayAs<f32, OneDim>> {
     let mut rng = rand::thread_rng();
 
-    let mut array: ArrayAs<f32, DynDim> = ArrayD::zeros(IxDyn(&[n,0]));
+    let mut array: ArrayAs<f32, OneDim> = Array1::zeros(n);
     for i in 0..n {
         array[i] = rng.gen::<f32>();
     }
-    
-    let array = Python::with_gil(|py|{
-        let array = Tensor::__new__(array.into_pyarray_bound(py).unbind(), Some(false));
-        array
-    });
-
     Ok(array)
 }
-
-fn zero_bias<'py>(n: usize) -> PyResult<Tensor > {
-    let array: ArrayAs<f32, DynDim> = ArrayD::zeros(IxDyn(&[n,0]));    
-    let y = Python::with_gil(|py|{
-        let array = Tensor::__new__(array.into_pyarray_bound(py).unbind(), Some(false));
-        array
-    });
-
-    Ok(y)
-}
-
 
 pub fn _py_run(value: &Bound<PyAny>, command: &str) -> PyResult<Py<PyDict>> {
     Python::with_gil(|py| {
@@ -111,17 +86,7 @@ macro_rules! add_class {
 
     };
 }
-
-#[macro_export]
-macro_rules! add_sub_module {
-    ($module : ident , $($class : ty), +) => {
-        $(
-            $module.add_sub_module::<$class>()?;
-        )+
-
-    };
-}
-
+#[allow(unused_macros)]
 macro_rules! add_function {
     ($module : ident , $($function : ident), +) => {
         $(
@@ -129,23 +94,33 @@ macro_rules! add_function {
         )+
     };
 }
+
+
+
+
+
+
+
+
+
+
+
 #[pymodule]
 #[pyo3(name = "rnet")]
-pub fn nnet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
-    let linearmodule = PyModule::new_bound(py, "linear_module")?;
-    let layermodule = PyModule::new_bound(py, "layer_module")?;
-    let lossmodule = PyModule::new_bound(py, "loss_module")?;
-    let neuaralmodule = PyModule::new_bound(py, "neural_module")?;
-    
-    // let activationmodule = PyModule::new_bound(py, "activation_module")?;
-    // let optimizemodule = PyModule::new_bound(py, "optimizer_module")?;
+pub fn rnet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
+    let module1 = PyModule::new_bound(py, "nnmodule")?;
+    let module2 = PyModule::new_bound(py, "layermodule")?;
+    let module3 = PyModule::new_bound(py, "lossmodule")?;
+   
+    m.add_submodule(&module1);
+    m.add_submodule(&module2);
+    m.add_submodule(&module3);
 
-    let _ = m.add_submodule(&layermodule);
-    let _ = m.add_submodule(&linearmodule);
-    let _ = m.add_submodule(&lossmodule);
-    let _ = m.add_submodule(&neuaralmodule);
-    add_class!(m, Tensor);
-    add_function!(m, softmax, sigmoid, tanh, relu);
 
+    // add_class!(m, Linear, Neuaral, Layers, ActiovationFunction, MSELoss);
+    // add functions
+    // add_function!(m, softmax, sigmoid, tanh, relu);
+    // add_function!(m, cross_entropy);
+    // add_function!(m, mse);
     Ok(())
 }

@@ -16,47 +16,23 @@ use crate::add_class;
 #[pyclass(module = "nn", unsendable, get_all, set_all, subclass, sequence, dict)]
 // #[pyo3(text_signature = "$cls(*args , **kwargs)" )]
 // #[display(fmt = "")]
-pub struct Neuaral {
-    // pub args: Option<Py<PyTuple>>,
-    // pub kwargs: Option<Py<PyDict>>,
-}
-
+pub struct Neuaral {}
 #[pymethods]
 impl Neuaral {
     #[new]
     #[pyo3(signature = (*args , **kwargs ) ,)]
     #[allow(unused_variables)]
     pub fn __new__(py: Python, args: &Bound<PyTuple>, kwargs: Option<&Bound<PyDict>>) -> Self {
-        // let kw: Option<Py<PyDict>> = kwargs
-        //     .filter(|d| !d.is_empty())
-        //     .map(|d| d.into_py_dict_bound(py).unbind());
-        // let arg: Option<Py<PyTuple>> = args.filter(|d| !d.is_empty()).map(|d| d.into_py(py));
-        Neuaral {
-            // args: match arg {
-            //     Some(arg) => Some(arg),
-            //     None => None,
-            // },
-            // kwargs: match kw {
-            //     Some(kw) => Some(kw),
-            //     None => None,
-            // },
-        }
-    }
+        Neuaral {  } }
 
     fn parameters<'py>(slf: &Bound<Self>, _py: Python<'py>) -> Py<PyDict> {
-        // acces dict of the class
         let dict = slf
             .getattr("__dict__")
             .unwrap()
             .downcast::<PyDict>()
             .unwrap()
-            .clone()
-            // .unbind()
-            ;
+            .clone() ;
         let _binding = dict.as_gil_ref().downcast::<PyDict>().unwrap();
-        // let v = binding.values();
-        // let v1 =  &v[0];
-        // println!("v1 : {0}", v1.weights);
         return dict.unbind();
     }
 

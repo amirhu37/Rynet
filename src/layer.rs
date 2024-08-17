@@ -1,6 +1,6 @@
 use numpy::PyArrayDyn;
 use pyo3::prelude::*;
-use pyo3::Bound as PyBound;
+
 use crate::add_class;
 
 /// A Python class representing a neural network layer.
@@ -12,14 +12,7 @@ use crate::add_class;
 ///     subclass (bool): Indicates that the class can be subclassed.
 ///     sequence (bool): Indicates that the class behaves like a sequence.
 ///     dict (bool): Indicates that the class has a dictionary attribute.
-#[pyclass(
-    module = "layer", 
-    name = "Layer", 
-    unsendable, 
-    subclass, 
-    sequence, 
-    dict
-)]
+#[pyclass(module = "layer", name = "Layer", unsendable, subclass, sequence, dict)]
 pub struct Layers;
 
 #[pymethods]
@@ -74,23 +67,20 @@ impl Layers {
         Ok(format!("Layers()"))
     }
 
-    /// Returns the docstring of the Layers class.
-    ///
-    /// Returns:
-    ///     String: The docstring of the Layers class.
-    #[getter]
-    fn __doc__(&self) -> String {
-        "
-        linear Layer. linear Layer. linear Layer.
-        "
-        .to_string()
-    }
+
+    // #[getter]
+    // fn __doc__(&self) -> String {
+    //     "
+    //     linear Layer. linear Layer. linear Layer.
+    //     "
+    //     .to_string()
+    // }
 }
 
 #[pymodule]
 #[pyo3(name = "layer")]
-fn layer_module(_py: Python, m: &PyBound<PyModule>) -> PyResult<()> {
+pub fn layermodule(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
     add_class!(m, Layers);
-    // m.add_function(wrap_pyfunction!(function_in_module1, m)?)?;
+
     Ok(())
 }
