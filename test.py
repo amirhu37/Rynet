@@ -53,7 +53,7 @@ print(type(tensor))
 
 
 linear_layer = lr.Linear(3, 2,True)
-print(linear_layer.weight )
+print(linear_layer.bias )
 linear_layer1 = lr.Linear(in_features=3, out_features=2, is_bias=False)
 
 

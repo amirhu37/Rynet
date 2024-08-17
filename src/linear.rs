@@ -27,27 +27,20 @@ use pyo3::{prelude::*, types::PyDict, Bound as PyBound
     subclass,
     sequence,
     dict,
-    // get_all,
+    get_all,
     // set_all
 )]
 
 pub struct Linear {
     /// The weights of the linear layer.
-    // #[pyo3(set)]
-    // #[get]
     pub weight: Tensor,
     /// The bias of the linear layer.
-    // #[pyo3(set)]
-    // #[pyo3(get)]
     pub bias: Tensor,
     /// Indicates whether the layer uses a bias term.
-    // #[pyo3(get)]
     pub is_bias: bool,
     /// Indicates whether the layer is trainable.
-    // #[pyo3(get)]
     pub trainable: bool,
     /// The shape of the linear layer as a tuple (in_features, out_features).
-    // #[pyo3(get)]
     shape: (usize, usize),
 }
 
@@ -101,7 +94,7 @@ impl Linear {
             Self {
                 weight: random_weight.into(),
                 bias: random_bias.into(),
-                is_bias: is_bias,
+                is_bias,
                 trainable: trainable.unwrap_or(true),
                 shape: (in_features, out_features),
             };
@@ -145,14 +138,14 @@ impl Linear {
         // todo!()
     }
 
-    #[getter]
-    pub fn weight(slf: &Bound<Self>) -> PyResult<Tensor>{
-        Ok(slf.borrow().weight.clone())
-    }
-    #[getter]
-    pub fn bias(slf: &Bound<Self>) -> Tensor{
-        slf.borrow().bias.clone()
-    }
+    // #[getter]
+    // pub fn weight(&self) -> PyResult<Tensor>{
+    //     Ok(self.weight.clone())
+    // }
+    // #[getter]
+    // pub fn bias(&self) -> Tensor{
+    //     self.bias.clone()
+    // }
     fn __str__(slf: &Bound<Self>) -> String {
         let bias_shape = if !slf.borrow().is_bias {
             0
