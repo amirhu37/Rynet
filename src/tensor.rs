@@ -8,22 +8,22 @@ use pyo3::Bound as PyBound;
 use crate::{ArrayAs, DynDim, OneDim, ThreeDim, TwoDim};
 
 // Define the TensorTrait trait
-pub trait TensorTrait {
-    // We can define some common behavior here if needed
-}
+// pub trait TensorTrait {
+//     // We can define some common behavior here if needed
+// }
 
-// Implement TensorTrait for ArrayAs<npy_float, OneDim>
-impl TensorTrait for ArrayAs<npy_float, OneDim> {}
+// // Implement TensorTrait for ArrayAs<npy_float, OneDim>
+// impl TensorTrait for ArrayAs<npy_float, OneDim> {}
 
-// Implement TensorTrait for ArrayAs<npy_float, TwoDim>
-impl TensorTrait for ArrayAs<npy_float, TwoDim> {}
+// // Implement TensorTrait for ArrayAs<npy_float, TwoDim>
+// impl TensorTrait for ArrayAs<npy_float, TwoDim> {}
 
-// Implement TensorTrait for ArrayAs<npy_float, ThreeDim>
-impl TensorTrait for ArrayAs<npy_float, ThreeDim> {}
+// // Implement TensorTrait for ArrayAs<npy_float, ThreeDim>
+// impl TensorTrait for ArrayAs<npy_float, ThreeDim> {}
 
 #[pyclass(
-    module = "layer", 
-    name = "Layer", 
+    // module = "layer", 
+    name = "Tensor", 
     unsendable, 
     subclass, 
     sequence, 
@@ -32,7 +32,7 @@ impl TensorTrait for ArrayAs<npy_float, ThreeDim> {}
 // #[derive(Debug, FromPyObject)]
 // #[derive(FromPyObject)]
 pub struct Tensor {
-    #[pyo3(get)]
+    #[pyo3(get,)]
     pub value: Py<PyArrayDyn<npy_float>>, 
     #[pyo3(get)]
     pub grad : bool
@@ -46,12 +46,12 @@ impl Tensor {
     #[new]
     pub fn __new__(
         // py: Python,
-        value: &PyBound<PyAny>,
+        value: Py<PyArrayDyn<f32>> ,
         req_grad: Option<bool>,
     ) -> Self {
-        let value: &PyArrayDyn<f32> = value.extract::<&PyArrayDyn<npy_float>>().unwrap();
+        // let value: &PyArrayDyn<f32> = value.extract::<&PyArrayDyn<npy_float>>().unwrap();
         // let shape = value.shape()
-        let value: Py<PyArrayDyn<f32>> = value.extract().unwrap() ;
+        // let value: Py<PyArrayDyn<f32>> = value.extract().unwrap() ;
         Tensor { 
             value: value, 
             // shape : shape,
@@ -87,20 +87,14 @@ impl Tensor {
                                         .add(&other_value
                                             .to_pyarray_bound(py)
                                         ).unwrap().downcast().unwrap().clone().unbind() ;
-        Tensor {
-            value: result,
-            grad: self.grad || other.grad,
-        }
+        Tensor::__new__(result, Some(self.grad)) 
     }
 
     // Method to transpose the tensor
     pub fn transpose(&self, py : Python) -> Tensor {
         let transposed_data : &PyArrayDyn<npy_float> = self.value.extract(py).unwrap()  ;
         let transposed_data: ArrayAs<npy_float, DynDim> = transposed_data.to_owned_array().reversed_axes();
-        Tensor {
-            value: transposed_data.to_pyarray_bound(py).unbind(),
-            grad: self.grad,
-        }
+        Tensor::__new__(transposed_data.to_pyarray_bound(py).unbind(), Some(self.grad)) 
     }
 
     // String representation

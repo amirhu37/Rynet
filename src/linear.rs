@@ -27,12 +27,13 @@ use pyo3::{prelude::*, types::PyDict, Bound as PyBound
     subclass,
     sequence,
     dict,
-    get_all,
+    // get_all,
     // set_all
 )]
 
 pub struct Linear {
     /// The weights of the linear layer.
+    // #[pyo3(get)]
     pub weight: Tensor,
     /// The bias of the linear layer.
     pub bias: Tensor,
@@ -138,14 +139,7 @@ impl Linear {
         // todo!()
     }
 
-    // #[getter]
-    // pub fn weight(&self) -> PyResult<Tensor>{
-    //     Ok(self.weight.clone())
-    // }
-    // #[getter]
-    // pub fn bias(&self) -> Tensor{
-    //     self.bias.clone()
-    // }
+
     fn __str__(slf: &Bound<Self>) -> String {
         let bias_shape = if !slf.borrow().is_bias {
             0
@@ -168,7 +162,14 @@ impl Linear {
         let class_name = slf.get_type().qualname()?;
         Ok(format!("{}", class_name))
     }
-
+    // #[getter]
+    // pub fn weight(&self) -> PyResult<Tensor>{
+    //     Ok(self.weight.clone())
+    // }
+    // #[getter]
+    // pub fn bias(&self) -> Tensor{
+    //     self.bias.clone()
+    // }
 }
 
 

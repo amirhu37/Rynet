@@ -58,7 +58,7 @@ fn random_weight(n: usize, m: usize) -> PyResult<Tensor > {
         }
     }
     let array = Python::with_gil(|py|{
-        let array = Tensor::__new__(&array.into_pyarray_bound(py), Some(false));
+        let array = Tensor::__new__(array.into_pyarray_bound(py).unbind(), Some(false));
         array
     });
 
@@ -75,7 +75,7 @@ fn random_bias<'py>(n: usize) -> PyResult<Tensor > {
     }
     
     let array = Python::with_gil(|py|{
-        let array = Tensor::__new__(&array.into_pyarray_bound(py), Some(false));
+        let array = Tensor::__new__(array.into_pyarray_bound(py).unbind(), Some(false));
         array
     });
 
@@ -85,7 +85,7 @@ fn random_bias<'py>(n: usize) -> PyResult<Tensor > {
 fn zero_bias<'py>(n: usize) -> PyResult<Tensor > {
     let array: ArrayAs<f32, DynDim> = ArrayD::zeros(IxDyn(&[n,0]));    
     let y = Python::with_gil(|py|{
-        let array = Tensor::__new__(&array.into_pyarray_bound(py), Some(false));
+        let array = Tensor::__new__(array.into_pyarray_bound(py).unbind(), Some(false));
         array
     });
 

@@ -48,7 +48,7 @@ class custom_layer(Layer):
 x = np.random.rand(20,3)
 
 tensor = Tensor(x)
-print(tensor)
+print(tensor.transpose())
 print(type(tensor))
 
 
