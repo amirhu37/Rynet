@@ -1,10 +1,16 @@
 import os
+import rnet.nn as nn
+
+import rnet.loss as loss
+from rnet.loss import MSELoss
 os.system("cls")
 
 # from rnet import Linear, Neuaral, Layer 
 # from layers import Layer
 # import rntet
-from rnet import nn, layer, loss
+
+# import rnet.nn._layer as _layer
+# from rnet import nn, layer
 # print(rntet.__dict__)
 # from rnet.rnet import MSELoss 
 # print(nnet.__dict__)
@@ -34,7 +40,7 @@ class SimpleNN(nn.Neuaral):
         return x
     
 
-class custom_layer(layer.Layer):
+class custom_layer(nn.Layer):
     def __init__(self, in_features, out_features, is_bias=True , *args, **kwargs ):
         self.in_features = in_features
         self.out_features = out_features
@@ -45,9 +51,8 @@ class custom_layer(layer.Layer):
         pass
 
 
-linear_layer = nn.Linear(in_features=3, out_features=2, is_bias=True)
-linear_layer1 = nn.Linear(in_features=3, out_features=2, is_bias=False)
-print("linear_layer",linear_layer)
+
+
 x = np.random.rand(20,3)
 # y = np.random.randint(0,3,20)
 y = np.random.randint(0,3,20)
@@ -56,7 +61,11 @@ y_c = np.eye(20,3)[y]
 # print(y_c)
 # print("y_c", y_c)
 
+linear_layer = nn.Linear(in_features=3, out_features=2, is_bias=True)
+linear_layer1 = nn.Linear(in_features=3, out_features=2, is_bias=False)
 
+print("linear_layer 1 ",linear_layer.forward(x))
+print("linear_layer",linear_layer)
 
 cls = SimpleNN()
 y_hat = cls(x[0])
@@ -71,14 +80,14 @@ y_hat.0
 
 param = cls.parameters()
 print("param ",param, )
-criterion = loss.MSELoss('mean')
+criterion = MSELoss('mean')
 
 loss = criterion(y_hat[0] , y_c[0])
 print(loss)
 
 for _ in range(10):
     y_hat = cls(x[0])
-    criterion = loss.MSELoss('mean')
+    criterion = MSELoss('mean')
     loss = criterion(y_hat[0] , y_c[0])
     
 print(loss)

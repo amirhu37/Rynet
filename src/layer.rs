@@ -13,10 +13,10 @@ use crate::add_class;
 ///     sequence (bool): Indicates that the class behaves like a sequence.
 ///     dict (bool): Indicates that the class has a dictionary attribute.
 #[pyclass(module = "layer", name = "Layer", unsendable, subclass, sequence, dict)]
-pub struct Layers;
+pub struct Layer;
 
 #[pymethods]
-impl Layers {
+impl Layer {
     /// Creates a new instance of the Layers class.
     ///
     /// Args:
@@ -34,7 +34,7 @@ impl Layers {
         args: &Bound<'_, PyAny>,
         kwargs: Option<&Bound<'_, PyAny>>,
     ) -> Self {
-        Layers
+        Layer
     }
 
     /// Calls the layer with a given value.
@@ -77,10 +77,10 @@ impl Layers {
     // }
 }
 
-#[pymodule]
-#[pyo3(name = "layer")]
-pub fn layermodule(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
-    add_class!(m, Layers);
+// #[pymodule]
+// #[pyo3(name = "layer")]
+// pub fn layermodule(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+//     add_class!(m, Layers);
 
-    Ok(())
-}
+//     Ok(())
+// }

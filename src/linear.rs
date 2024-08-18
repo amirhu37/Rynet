@@ -1,3 +1,5 @@
+use std::{borrow::Borrow, ops::Deref};
+
 use crate::{add_class, random_bias, random_weight, ArrayAs, Ndarray, OneDim, TwoDim};
 use ndarray::{Array1, ArrayBase, Dim, OwnedRepr};
 use pyo3::{types::PyTuple,Bound as PyBound};
@@ -95,13 +97,12 @@ impl Linear {
     #[pyo3(text_signature = "($cls )")]
     fn parameters<'py>(slf: &PyBound<Self>, _py: Python<'py>) -> PyResult<Py<PyDict>> {
         // acces dict of the class
-        let dict = slf
+        let  dict = slf
             .getattr("__dict__")
             .unwrap()
             .downcast::<PyDict>()
             .unwrap()
             .clone();
-        let _binding = dict.as_gil_ref().downcast::<PyDict>().unwrap();
 
         return Ok(dict.unbind());
     }
@@ -123,21 +124,23 @@ impl Linear {
         Ok(result.to_object(py))
     }
 
-    fn __str__(slf: &PyBound<Self>) -> String {
+    fn __str__(slf: &PyBound<Self>,  py: Python<'_>) -> PyResult<String> {
+;
         let bias_shape = if !slf.borrow().is_bias {
             0
         } else {
             slf.borrow().shape.1
         };
         let class_name: String = slf.get_type().qualname().unwrap();
-        format!(
+        let returns = format!(
             "{}(in_features ={}, out_features ={}, is_bias={}, params={}) ",
             class_name,
             slf.borrow().shape.0,
             slf.borrow().shape.1,
             slf.borrow().is_bias,
             slf.borrow().shape.0 * slf.borrow().shape.1 + bias_shape
-        )
+        );
+        Ok(returns)
     }
 
     fn __repr__(slf: &PyBound<Self>) -> PyResult<String> {
@@ -151,61 +154,14 @@ impl Linear {
 
 
 
-// #[allow(unconditional_recursion)]
-#[derive(
-    Debug,
-    //  Display,
-    Clone,
-)]
-#[pyclass(module = "nn", unsendable, get_all, set_all, subclass, sequence, dict)]
-// #[pyo3(text_signature = "$cls(*args , **kwargs)" )]
-// #[display(fmt = "")]
-pub struct Neuaral {}
-#[pymethods]
-impl Neuaral {
-    #[new]
-    #[pyo3(signature = (*args , **kwargs ) ,)]
-    #[allow(unused_variables)]
-    pub fn __new__(py: Python, args: &PyBound<PyTuple>, kwargs: Option<&PyBound<PyDict>>) -> Self {
-        Neuaral {  } }
 
-    fn parameters<'py>(slf: &PyBound<Self>, _py: Python<'py>) -> PyResult<Py<PyDict>> {
-        let dict = slf
-            .getattr("__dict__")
-            .unwrap()
-            .downcast::<PyDict>()
-            .unwrap()
-            .clone() ;
-        let _binding = dict.as_gil_ref().downcast::<PyDict>().unwrap();
-        return Ok(dict.unbind());
-    }
-
-    pub fn forward(&self, x: PyObject) -> PyResult<PyObject> {
-        // TODO
-        return Ok(x);
-    }
-    pub fn __call__(&self, x: PyObject) -> PyResult<PyObject> {
-        self.forward(x)
-    }
-    fn __str__(slf: &PyBound<Self>) -> PyResult<String> {
-        let class_name: String = slf.get_type().qualname()?;
-
-        Ok(format!("{}", class_name))
-    }
-
-    fn __repr__(slf: &PyBound<Self>) -> PyResult<String> {
-        // This is the equivalent of `self.__class__.__name__` in Python.
-        let class_name = slf.get_type().qualname()?;
-        Ok(format!("{}", class_name))
-    }
-}
 //////////////////////////////////////////////////////////////////////////////////////////////////4
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////// 
-#[pymodule]
-#[pyo3(name = "nn")]
-pub fn nnmodule(_py: Python, m: &PyBound<PyModule>) -> PyResult<()>{
-    add_class!(m, Linear, Neuaral);
+// #[pymodule]
+// #[pyo3(name = "nn")]
+// pub fn nnmodule(_py: Python, m: &PyBound<PyModule>) -> PyResult<()>{
+//     add_class!(m, Linear);
 
-    Ok(())
-}
+//     Ok(())
+// }
