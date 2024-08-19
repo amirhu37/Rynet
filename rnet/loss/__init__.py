@@ -1,3 +1,1 @@
-from ._mse import *
-
-__all__ = __doc__
+from _mse import *

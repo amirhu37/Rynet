@@ -1,9 +1,10 @@
 import os
+# from rnet.loss import MSELoss
 import rnet.nn as nn
 import rnet
-import rnet.loss as loss
-from rnet.loss import MSELoss
-import rnet.tensor
+# import rnet.loss as loss
+# from rnet.loss import MSELoss
+# import rnet.tensor.
 os.system("cls")
 
 # from rnet import Linear, Neuaral, Layer 
@@ -17,10 +18,11 @@ os.system("cls")
 # print(nnet.__dict__)
 import numpy as np
 
-# from tools import relu
+# print(rnet.loss.__dict__['MSELoss'])
 
 
 
+linear_layer = nn.Linear(in_features=3, out_features=2, is_bias=True)
 
 
 
@@ -66,7 +68,9 @@ tensor = rnet.Tensor(x)
 # print("TT ",x)
 
 
-linear_layer = nn.Linear(in_features=3, out_features=2, is_bias=True)
+linear_layer = rnet.Linear(in_features=3, out_features=2, is_bias=True)
+print("linear_layer",linear_layer.weight)
+
 linear_layer1 = nn.Linear(in_features=3, out_features=2, is_bias=False)
 
 print("linear_layer",linear_layer.weight)

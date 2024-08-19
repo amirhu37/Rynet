@@ -1,7 +1,6 @@
 use numpy::PyArrayDyn;
 use pyo3::prelude::*;
 
-use crate::add_class;
 
 /// A Python class representing a neural network layer.
 ///
@@ -77,10 +76,3 @@ impl Layer {
     // }
 }
 
-// #[pymodule]
-// #[pyo3(name = "layer")]
-// pub fn layermodule(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
-//     add_class!(m, Layers);
-
-//     Ok(())
-// }

@@ -1,8 +1,7 @@
-use std::{borrow::Borrow, ops::Deref};
 
-use crate::{add_class, random_bias, random_weight, ArrayAs, Ndarray, OneDim, TwoDim};
+use crate::{tools::{random_bias, random_weight}, ArrayAs, Ndarray, OneDim, TwoDim};
 use ndarray::{Array1, ArrayBase, Dim, OwnedRepr};
-use pyo3::{types::PyTuple,Bound as PyBound};
+use pyo3::Bound as PyBound;
 
 use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, PyArray1, PyArray2, PyArrayDyn};
 use pyo3::{
@@ -59,7 +58,7 @@ impl Linear {
     text_signature = "(in_features , out_features, is_bias = true , trainable = true,  *args , **kwargs  )"
 
             )]
-    // #[allow(unused_variables)]
+    #[allow(unused_variables)]
     pub fn __new__<'py>(
         py: Python,
         in_features: usize,
@@ -125,8 +124,8 @@ impl Linear {
         Ok(result.to_object(py))
     }
 
-    fn __str__(slf: &PyBound<Self>,  py: Python<'_>) -> PyResult<String> {
-;
+    fn __str__(slf: &PyBound<Self>) -> PyResult<String> {
+
         let bias_shape = if !slf.borrow().is_bias {
             0
         } else {
@@ -152,17 +151,3 @@ impl Linear {
 
 }
 
-
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////4
-////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////// 
-// #[pymodule]
-// #[pyo3(name = "nn")]
-// pub fn nnmodule(_py: Python, m: &PyBound<PyModule>) -> PyResult<()>{
-//     add_class!(m, Linear);
-
-//     Ok(())
-// }

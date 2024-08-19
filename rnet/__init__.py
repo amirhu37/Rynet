@@ -1,12 +1,4 @@
-import rnet
-from .tensor import Tensor
-# from rntet import rnet
-# from rnet import Tensor
-
-__all__ = rnet.__doc__
-# print(__all__)
-# class Tensor:
-#     def __init__(self, data, requires_grad=False):...
-#     # def __str__(self) -> any:...
-#     # def __repr__(self) -> any:...
-#     def transpose(self)->Tensor:... 
+from .nn import *
+from .loss import *
+from .rnet import * 
+# from .tensor import *

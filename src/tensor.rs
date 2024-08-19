@@ -4,8 +4,8 @@ use std::ops::{Add, Mul};
 use numpy::{dot_bound, IntoPyArray, ToPyArray};
 use numpy::{npyffi::npy_float, PyArrayDyn};
 use pyo3::prelude::*;
-use pyo3::Bound as PyBound;
-use crate::{ArrayAs, DynDim, OneDim, ThreeDim, TwoDim};
+// use pyo3::Bound as PyBound;
+use crate::{ArrayAs, DynDim};
 
 // Define the TensorTrait trait
 // pub trait TensorTrait {

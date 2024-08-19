@@ -1,3 +1,4 @@
+from rnet import *
 from ._neural import *
 from ._layer import *
 from ._linear import *

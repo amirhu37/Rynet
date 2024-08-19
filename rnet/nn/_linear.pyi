@@ -1,6 +1,7 @@
 from typing import Any, Dict, Tuple
 import numpy as np
-
+from rnet import *
+__all__ = __doc__
 
 class Linear:
     weight: np.ndarray
@@ -9,12 +10,7 @@ class Linear:
     trainable: bool
     shape: Tuple[int, int]
 
-    def __init__(self, in_features : int, out_features : int, is_bias : bool =True, trainable: bool = True):
-        self.in_features = in_features
-        self.out_features = out_features
-        self.is_bias = is_bias
-        self.trainable = trainable
-        ...
+    def __init__(self, in_features : int, out_features : int, is_bias : bool =True, trainable: bool = True)->None:...
     def forward(self, x : np.ndarray)-> np.ndarray:...
     def backward(self, x : np.ndarray, dy : np.ndarray)-> np.ndarray:...
     def update(self, x : np.ndarray, dy : np.ndarray, lr : float)-> np.ndarray:...

@@ -1,6 +1,9 @@
 from typing import Any
 from numpy import ndarray
 
+
+__all__ = __doc__
+
 class Neuaral:    
     def __init__(self, *args, **kwargs) -> None: ...
     def forward(self, x: ndarray) -> ndarray: ...

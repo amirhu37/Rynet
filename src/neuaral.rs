@@ -1,11 +1,8 @@
-use pyo3::{Bound as PyBound,
-    prelude::*,
-    types::{PyDict, PyTuple},
-};
+use pyo3::types::{PyDict, PyTuple};
+use pyo3::prelude::*;
 
 use pyo3::Bound;
 
-use crate::add_class;
 
 #[allow(unconditional_recursion)]
 #[derive(
@@ -56,3 +53,11 @@ impl Neuaral {
     }
 }
 
+
+// #[pymodule]
+// #[pyo3(name = "neuaral")]
+// pub fn neuralmodule(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+//     add_class!(m, Neuaral);
+
+//     Ok(())
+// }

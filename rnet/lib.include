@@ -1,0 +1,6 @@
+src/linear.rs
+src/neural.rs
+src/layer.rs
+src/lib.rs
+
+rnet/
