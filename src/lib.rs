@@ -12,7 +12,7 @@ pub mod tensor;
 use layer::Layer;
 use linear::Linear;
 use loss::MSELoss;
-use neuaral::Neuaral;
+use neuaral::Neural;
 use tensor::Tensor;
 
 use ndarray::{ArrayBase, Dim, IxDyn, IxDynImpl, OwnedRepr};
@@ -53,43 +53,43 @@ pub type MultiDim = IxDyn;
 
 
 
-// #[pymodule]
-// #[pyo3(name = "nn")]
-// pub fn nn(_py: Python, m: &PyBound<PyModule>) -> PyResult<()>{
-//     add_class!(m, Linear, Neuaral);
+#[pymodule]
+#[pyo3(name = "nn")]
+pub fn nn(_py: Python, m: &PyBound<PyModule>) -> PyResult<()>{
+    add_class!(m, Linear, Neural);
 
-//     Ok(())
-// }
+    Ok(())
+}
 
-// #[pymodule]
-// #[pyo3(name = "loss")]
-// pub fn loss_fn(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
-//     add_class!(m, MSELoss);
+#[pymodule]
+#[pyo3(name = "loss")]
+pub fn loss_fn(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+    add_class!(m, MSELoss);
 
-//     Ok(())
-// }
-// #[pymodule]
-// #[pyo3(name = "layer")]
-// pub fn layers(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
-//     add_class!(m, Layer);
+    Ok(())
+}
+#[pymodule]
+#[pyo3(name = "layer")]
+pub fn layers(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+    add_class!(m, Layer);
 
-//     Ok(())
-// }
+    Ok(())
+}
 
 
 #[pymodule]
 #[pyo3(name = "rnet")]
 pub fn rnet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
-    // let module1 = PyModule::new_bound(py, "nn")?;
-    // let module2 = PyModule::new_bound(py, "layers")?;
-    // let module3 = PyModule::new_bound(py, "loss_fn")?;
+    let module1 = PyModule::new_bound(py, "nn")?;
+    let module2 = PyModule::new_bound(py, "layers")?;
+    let module3 = PyModule::new_bound(py, "loss_fn")?;
    
-    // m.add_submodule(&module1)?;
-    // m.add_submodule(&module2)?;
-    // m.add_submodule(&module3)?;
+    m.add_submodule(&module1)?;
+    m.add_submodule(&module2)?;
+    m.add_submodule(&module3)?;
 
 
-    add_class!(m,Linear, Neuaral, Layer, MSELoss ,Tensor);
+    // add_class!(m,Linear, Neuaral, Layer, MSELoss ,Tensor);
     // add functions
     // add_function!(m, softmax, sigmoid, tanh, relu);
 

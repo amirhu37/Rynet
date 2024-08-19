@@ -2,6 +2,7 @@ import os
 # from rnet.loss import MSELoss
 import rnet.nn as nn
 import rnet
+from tools import relu
 # import rnet.loss as loss
 # from rnet.loss import MSELoss
 # import rnet.tensor.
@@ -26,7 +27,7 @@ linear_layer = nn.Linear(in_features=3, out_features=2, is_bias=True)
 
 
 
-class SimpleNN(nn.Neuaral):
+class SimpleNN(nn.Neural):
     def __init__(self):
         # super(SimpleNN, self).__init__()
         self.fc1 = nn.Linear(3, 12)  
@@ -43,15 +44,15 @@ class SimpleNN(nn.Neuaral):
         return x
     
 
-class custom_layer(nn.Layer):
-    def __init__(self, in_features, out_features, is_bias=True , *args, **kwargs ):
-        self.in_features = in_features
-        self.out_features = out_features
-        # super(custom_layer, self).__init__()
-        pass
-    def some_custom_method(self):
-        print( self.in_features * self.out_features )
-        pass
+# class custom_layer(nn.Layer):
+#     def __init__(self, in_features, out_features, is_bias=True , *args, **kwargs ):
+#         self.in_features = in_features
+#         self.out_features = out_features
+#         # super(custom_layer, self).__init__()
+#         pass
+#     def some_custom_method(self):
+#         print( self.in_features * self.out_features )
+#         pass
 
 
 
@@ -64,11 +65,11 @@ y_c = np.eye(20,3)[y]
 # print(y_c)
 # print("y_c", y_c)
 
-tensor = rnet.Tensor(x)
+# tensor = rnet.Tensor(x)
 # print("TT ",x)
 
 
-linear_layer = rnet.Linear(in_features=3, out_features=2, is_bias=True)
+linear_layer = nn.Linear(in_features=3, out_features=2, is_bias=True)
 print("linear_layer",linear_layer.weight)
 
 linear_layer1 = nn.Linear(in_features=3, out_features=2, is_bias=False)
