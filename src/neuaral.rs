@@ -56,11 +56,3 @@ impl Neuaral {
     }
 }
 
-
-// #[pymodule]
-// #[pyo3(name = "neuaral")]
-// fn neuaral_module(_py: Python, m: &PyBound<PyModule>) -> PyResult<()> {
-//     add_class!(m, Neuaral);
-//     // m.add_function(wrap_pyfunction!(function_in_module1, m)?)?;
-//     Ok(())
-// }

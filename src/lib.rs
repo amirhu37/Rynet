@@ -6,15 +6,16 @@ pub mod loss;
 pub mod neuaral;
 pub mod optimizers;
 pub mod tools;
-
+pub mod tensor;
 
 use functions::ActiovationFunction;
 use layer::Layer;
 use linear::Linear;
 use loss::MSELoss;
 use neuaral::Neuaral;
+use tensor::Tensor;
 
-use ndarray::{Array1, Array2, ArrayBase, Dim, IxDyn, IxDynImpl, OwnedRepr};
+use ndarray::{Array, Array1, Array2, ArrayBase, Dim, IxDyn, IxDynImpl, OwnedRepr};
 use numpy::{Ix2, PyArray, PyArrayDyn};
 #[allow(unused_imports)]
 use pyo3::Bound as PyBound;
@@ -25,6 +26,7 @@ use pyo3::{
     Py, PyResult, Python,
 };
 
+use rand::distributions::weighted::alias_method::Weight;
 use rand::Rng;
 pub type DynDim = Dim<IxDynImpl>;
 pub type OneDim = Dim<[usize; 1]>;
@@ -51,8 +53,8 @@ pub type MultiDim = IxDyn;
 
 pub fn random_weight(n: usize, m: usize) -> PyResult<ArrayAs<f32, TwoDim>> {
     let mut rng = rand::thread_rng();
-    let mut array: ArrayAs<f32, TwoDim> = Array2::zeros(Ix2(n, m));
-    // array.t()
+    let mut array: ArrayAs<f32, TwoDim> = Array::zeros((n, m));
+
     for i in 0..n {
         for j in 0..m {
             array[[i, j]] = rng.gen::<f32>();
@@ -60,6 +62,24 @@ pub fn random_weight(n: usize, m: usize) -> PyResult<ArrayAs<f32, TwoDim>> {
     }
     Ok(array)
 }
+
+pub fn stack(weight : ArrayAs<f32, TwoDim>, bias : ArrayAs<f32, OneDim> )->  PyResult<ArrayAs<f32, TwoDim>> {
+    // stack both array into one
+    let mut stacked_array = Array::zeros((weight.shape()[0], weight.shape()[1]
+    + bias.shape()[0]));
+    for i in 0..weight.shape()[0] {
+        for j in 0..weight.shape()[1] {
+            stacked_array[[i, j]] = weight[[i, j]];
+            }
+            for j in 0..bias.shape()[0] {
+                stacked_array[[i, weight.shape()[1] + j]] = bias[[j]];
+                }
+        }
+        Ok(stacked_array)
+
+}
+
+
 pub fn random_bias<'py>(n: usize) -> PyResult<ArrayAs<f32, OneDim>> {
     let mut rng = rand::thread_rng();
 
@@ -109,7 +129,7 @@ macro_rules! add_function {
 
 #[pymodule]
 #[pyo3(name = "rnet")]
-pub fn rnet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
+pub fn rnet(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     // add_class!(m, Linear, Neuaral, Layer, MSELoss, );
     // let module1 = PyModule::new_bound(py, "nnmodule")?;
     // let module2 = PyModule::new_bound(py, "layermodule")?;
@@ -120,7 +140,7 @@ pub fn rnet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     // let _ = m.add_submodule(&module3);
 
 
-    add_class!(m, Linear, Neuaral, Layer, ActiovationFunction, MSELoss);
+    add_class!(m, Linear, Neuaral, Layer, ActiovationFunction, MSELoss, Tensor);
     // add functions
     // add_function!(m, softmax, sigmoid, tanh, relu);
     // add_function!(m, cross_entropy);

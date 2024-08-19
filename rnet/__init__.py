@@ -1,4 +1,5 @@
 import rnet
+from .tensor import Tensor
 # from rntet import rnet
 # from rnet import Tensor
 

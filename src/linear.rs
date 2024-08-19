@@ -24,6 +24,7 @@ use pyo3::{
 ///*     get_all (bool): Indicates that all attributes are gettable.
 ///*     set_all (bool): Indicates that all attributes are settable.
 // #[derive(FromPyObject)]
+#[derive(Debug)]
 #[pyclass(
     module = "nn",
     name = "Linear",
@@ -36,10 +37,10 @@ use pyo3::{
 pub struct Linear {
     /// The weights of the linear layer.
     #[pyo3(get,set, name="weight")]
-    pub weight: PyObject,
+    pub weight: Py<PyArray2<npy_float>>,
     /// The bias of the linear layer.
     #[pyo3(get,set, name="bias")]
-    pub bias: PyObject,
+    pub bias: Py<PyArray1<npy_float>>,
     /// Indicates whether the layer uses a bias term.
     #[pyo3(get)]
     pub is_bias: bool,
