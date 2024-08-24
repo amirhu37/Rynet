@@ -53,43 +53,43 @@ pub type MultiDim = IxDyn;
 
 
 
+// #[pymodule]
+// #[pyo3(name = "nn")]
+// pub fn nn(_py: Python, m: &PyBound<PyModule>) -> PyResult<()>{
+//     add_class!(m, Linear, Neural);
+
+//     Ok(())
+// }
+
+// #[pymodule]
+// #[pyo3(name = "loss")]
+// pub fn loss_fn(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+//     add_class!(m, MSELoss);
+
+//     Ok(())
+// }
+// #[pymodule]
+// #[pyo3(name = "layer")]
+// pub fn layers(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+//     add_class!(m, Layer);
+
+//     Ok(())
+// }
+
+
 #[pymodule]
-#[pyo3(name = "nn")]
-pub fn nn(_py: Python, m: &PyBound<PyModule>) -> PyResult<()>{
-    add_class!(m, Linear, Neural);
-
-    Ok(())
-}
-
-#[pymodule]
-#[pyo3(name = "loss")]
-pub fn loss_fn(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
-    add_class!(m, MSELoss);
-
-    Ok(())
-}
-#[pymodule]
-#[pyo3(name = "layer")]
-pub fn layers(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
-    add_class!(m, Layer);
-
-    Ok(())
-}
-
-
-#[pymodule]
-#[pyo3(name = "rnet")]
-pub fn rnet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
-    let module1 = PyModule::new_bound(py, "nn")?;
-    let module2 = PyModule::new_bound(py, "layers")?;
-    let module3 = PyModule::new_bound(py, "loss_fn")?;
+#[pyo3(name = "rynet")]
+pub fn rynet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
+    // let module1 = PyModule::new_bound(py, "nn")?;
+    // let module2 = PyModule::new_bound(py, "layers")?;
+    // let module3 = PyModule::new_bound(py, "loss_fn")?;
    
-    m.add_submodule(&module1)?;
-    m.add_submodule(&module2)?;
-    m.add_submodule(&module3)?;
+    // m.add_submodule(&module1)?;
+    // m.add_submodule(&module2)?;
+    // m.add_submodule(&module3)?;
 
 
-    // add_class!(m,Linear, Neuaral, Layer, MSELoss ,Tensor);
+    add_class!(m,Linear, Neural, Layer, MSELoss ,Tensor);
     // add functions
     // add_function!(m, softmax, sigmoid, tanh, relu);
 
