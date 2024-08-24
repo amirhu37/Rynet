@@ -1,32 +1,10 @@
 import os
 
 import numpy as np
-# from rnet.loss import MSELoss
-# import rnet.nn as rn
+
 import rnet as rn
-import rynet
 from tools import relu
-# from rnet.nn import Linear
 
-# import torch.nn as nn
-# import rnet.loss as loss
-# from rnet.loss import MSELoss
-# import rnet.tensor.
-# os.system("cls")
-
-# from rnet import Linear, Neuaral, Layer 
-# from layers import Layer
-# import rntet
-
-# import rnet.nn._layer as _layer
-# from rnet import nn, layer
-# print(rntet.__dict__)
-# from rnet.rnet import MSELoss 
-# print(nnet.__dict__)
-# import numpy as np
-
-# print(rnet.loss.__dict__['MSELoss'])
-# print(rn.__dict__)
 print(
     rn. __dict__    )
 

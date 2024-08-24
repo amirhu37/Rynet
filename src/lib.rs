@@ -78,8 +78,8 @@ pub type MultiDim = IxDyn;
 
 
 #[pymodule]
-#[pyo3(name = "rynet")]
-pub fn rynet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
+#[pyo3(name = "rnet")]
+pub fn rnet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     // let module1 = PyModule::new_bound(py, "nn")?;
     // let module2 = PyModule::new_bound(py, "layers")?;
     // let module3 = PyModule::new_bound(py, "loss_fn")?;
