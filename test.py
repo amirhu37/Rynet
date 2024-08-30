@@ -2,13 +2,14 @@ import os
 
 import numpy as np
 
-import rnet as rn
+# from rnet import nn as rn
+import rnet.nn as rn
 from tools import relu
 
 print(
     rn. __dict__    )
 
-linear_layer = rn.Linear(in_features=3, out_features=2, is_bias=True)
+linear_layer = rn. Linear(in_features=3, out_features=2, is_bias=True)
 
 
 

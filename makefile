@@ -1,9 +1,10 @@
 debug:
+	cd rnet
 	maturin develop
-	python test.py
+	python ./rnet/test.py
 
 test:
-	python test.py
+	python C:\Users\AmirHussain\Documents\GitHub\Rynet\test.py
 
 run:
 	maturin develop

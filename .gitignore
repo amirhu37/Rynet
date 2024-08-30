@@ -12,3 +12,4 @@ v-enviro/
 test.py
 test.py
 rntet/__pycache__/
+rnet/target/
