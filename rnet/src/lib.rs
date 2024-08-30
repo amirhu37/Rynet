@@ -41,7 +41,6 @@ pub type Ndarray<Dimen> = ArrayBase<OwnedRepr<f32>, Dim<Dimen>>;
 // pub type d1array = ArrayBase<OwnedRepr<f32>, Dim<IxDynImpl>>;
 
 /// Type alias for a 2-dimensional ndarray with owned data, where each element is a vector of vectors of f32.
-
 pub type BoundedArrayAs<'py, T> = &'py PyBound<'py, ArrayAs<T, DynDim>>;
 /// Type alias for a 2-dimensional ndarray with owned data, where each element is a vector of vectors of f32.
 pub type NDArray2 = ArrayBase<OwnedRepr<Vec<Vec<f32>>>, Dim<[usize; 2]>>;
