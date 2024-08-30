@@ -56,7 +56,7 @@ pub type MultiDim = IxDyn;
 #[pyo3(name = "nn")]
 pub fn nn(_py: Python, m: &PyBound<PyModule>) -> PyResult<()>{
     add_class!(m, Linear, Neural);
-
+    println!("mm");
     Ok(())
 }
 
