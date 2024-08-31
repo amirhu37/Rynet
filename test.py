@@ -2,7 +2,8 @@ import os
 
 import numpy as np
 
-import rnet as rn
+import rnet.nn as rn
+# import rnet.nn as rn
 from tools import relu
 
 print(

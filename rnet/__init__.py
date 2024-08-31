@@ -1,5 +1,4 @@
-# from . import nn
+# rnet/__init__.py
+from . import nn
 
-r"""
-some Doc
-"""
+__all__ = dir()

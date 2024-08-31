@@ -38,8 +38,6 @@ pub type NpNdarrayAs<T, D> = Py<PyArray<T, D>>;
 pub type ArrayAs<T, D> = ArrayBase<OwnedRepr<T>, D>;
 
 pub type Ndarray<Dimen> = ArrayBase<OwnedRepr<f32>, Dim<Dimen>>;
-// pub type d1array = ArrayBase<OwnedRepr<f32>, Dim<IxDynImpl>>;
-
 /// Type alias for a 2-dimensional ndarray with owned data, where each element is a vector of vectors of f32.
 pub type BoundedArrayAs<'py, T> = &'py PyBound<'py, ArrayAs<T, DynDim>>;
 /// Type alias for a 2-dimensional ndarray with owned data, where each element is a vector of vectors of f32.
@@ -74,20 +72,21 @@ pub fn layers_(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
     Ok(())
 }
 
-#[allow(deprecated)]
+
+
 #[pymodule]
 #[pyo3(name = "rnet")]
 pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
-    let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn_")?;
-    let layers: PyBound<'_, PyModule> = PyModule::new_bound(py, "layers_")?;
-    let loss_: PyBound<'_, PyModule> = PyModule::new_bound(py, "loss_")?;
+    // let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn_")?;
+    // let layers: PyBound<'_, PyModule> = PyModule::new_bound(py, "layers_")?;
+    // let loss_: PyBound<'_, PyModule> = PyModule::new_bound(py, "loss_")?;
    
-    module.add_submodule(&nn)?;
-    module.add_submodule(&layers)?;
-    module.add_submodule(&loss_)?;
+    // module.add_submodule(&nn)?;
+    // module.add_submodule(&layers)?;
+    // module.add_submodule(&loss_)?;
 
-    // module. add_class::<Linear>()?;
-    // add_class!(m,Linear, Model, Layer, MSELoss ,Tensor);
+    module. add_class::<Linear>()?;
+    // add_class!(module,Linear, Model, Layer, MSELoss ,Tensor);
     // add functions
     // add_function!(m, softmax, sigmoid, tanh, relu);
 
