@@ -4,10 +4,14 @@ from tools import relu
 
 
 # from rnet import nn as rn
+# import rnet.nn 
+# import rnet as rn
 import rnet as rn
-
+# from rny import nn as rn 
 print(
     rn. __dict__    )
+
+# import rnet.nn as rn
 
 linear_layer = rn. Linear(in_features=3, out_features=2, is_bias=True)
 print(linear_layer)

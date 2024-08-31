@@ -8,21 +8,8 @@ use pyo3::{
     prelude::*,
     types::PyDict,
 };
-/// Type alias for a 1-dimensional ndarray with owned data and dynamic dimensions.
 
-///# A Python class representing a linear layer in a neural network.
-///
-///## Attributes:
-///*     module (str): The name of the module, which is "layer".
-///*     name (str): The name of the class, which is "Linear".
-///*     unsendable (bool): Indicates that the class is unsendable.
-///*     extends (Layers): Indicates that the class extends the Layers class.
-///*     subclass (bool): Indicates that the class can be subclassed.
-///*     sequence (bool): Indicates that the class behaves like a sequence.
-///*     dict (bool): Indicates that the class has a dictionary attribute.
-///*     get_all (bool): Indicates that all attributes are gettable.
-///*     set_all (bool): Indicates that all attributes are settable.
-// #[derive(IntoPyObject)]
+
 #[derive(Debug)]
 #[pyclass(
     module = "nn",

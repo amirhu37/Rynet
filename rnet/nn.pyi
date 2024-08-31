@@ -1,7 +1,6 @@
 from typing import Any, Dict, Tuple, overload
 from numpy import ndarray
 
-# @overload
 class Linear:
     """
     ### doc
@@ -13,7 +12,6 @@ class Linear:
     shape: Tuple[int, int]
 
     def __init__(self, in_features: int, out_features: int, is_bias: bool = True, trainable: bool = True) -> None:
-        print("dd")
         ...
     def forward(self, x: ndarray) -> ndarray: ...
     def backward(self, x: ndarray, dy: ndarray) -> ndarray: ...
@@ -26,7 +24,7 @@ class Linear:
     def __getattribute__(self, name: str) -> Any: ...
 
 
-# @overload
+
 class Model:
     def __init__(self, *args: Any, **kwargs: Any) -> None: ...
     def forward(self, x: ndarray) -> ndarray: ...

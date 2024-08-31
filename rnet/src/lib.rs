@@ -3,7 +3,7 @@ pub mod functions;
 pub mod layer;
 pub mod linear;
 pub mod loss_functions;
-pub mod neural;
+pub mod model;
 pub mod optimizers;
 pub mod tools;
 pub mod tensor;
@@ -13,7 +13,7 @@ pub mod types;
 use layer::Layer;
 use linear::Linear;
 use loss_functions::MSELoss;
-use neural::Model;
+use model::Model;
 use prelude::PyModuleMethods;
 use tensor::Tensor;
 
@@ -56,12 +56,16 @@ pub type MultiDim = IxDyn;
 
 
 #[pymodule]
-pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
-    // let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn_")?;
-    // add_class!(nn,Linear, Model, Layer, MSELoss ,Tensor);
+#[pyo3(name = "rnet")]
+pub fn moduling(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
+    // let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn")?;
+    // add_class!(nn, Linear, Model, Layer, MSELoss ,Tensor);
     // module.add_submodule(&nn)?;
-
-    register_child_module!(module, "nn" , Linear, Model);
+    let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn")?;
+    add_class!(module,Linear, Model, Layer, MSELoss ,Tensor);
+    module.add_submodule(&nn)?;
+    
+    // register_child_module!(module, "nn" , Linear, Model);
 
     Ok(())
 }

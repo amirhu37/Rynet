@@ -4,7 +4,7 @@ use pyo3::prelude::*;
 use pyo3::Bound;
 
 
-#[allow(unconditional_recursion)]
+// #[allow(unconditional_recursion)]
 #[derive(
     Debug,
     //  Display,
@@ -12,11 +12,11 @@ use pyo3::Bound;
 )]
 #[pyclass(
     module = "nn", 
-unsendable, 
-get_all,
- set_all,
-  subclass,
-   sequence,
+    unsendable, 
+    get_all,
+    set_all,
+    subclass,
+    sequence,
    dict)]
 // #[pyo3(text_signature = "$cls(*args , **kwargs)" )]
 // #[display(fmt = "")]
@@ -44,6 +44,7 @@ impl Model {
         // TODO
         return Ok(x);
     }
+    
     pub fn __call__(&self, x: PyObject) -> PyObject {
         self.forward(x).expect("call error")
     }
