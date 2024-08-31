@@ -89,11 +89,24 @@ macro_rules! add_class {
 
     };
 }
-#[allow(unused_macros)]
+
+#[macro_export]
 macro_rules! add_function {
     ($module : ident , $($function : ident), +) => {
         $(
            $module.add_wrapped(wrap_pyfunction!($function))?;
         )+
+    };
+}
+
+
+#[macro_export]
+macro_rules! register_child_module {
+    ($parent_module : ident, $name : expr , $($class :ty),+) => {
+        let child_module = PyModule::new_bound($parent_module.py(), $name)?;
+        $(
+            child_module.add_class::<$class>()?;
+        )+
+        let _ = $parent_module.add_submodule(&child_module);
     };
 }

@@ -10,7 +10,14 @@ use pyo3::Bound;
     //  Display,
     Clone,
 )]
-#[pyclass(module = "nn", unsendable, get_all, set_all, subclass, sequence, dict)]
+#[pyclass(
+    module = "nn", 
+unsendable, 
+get_all,
+ set_all,
+  subclass,
+   sequence,
+   dict)]
 // #[pyo3(text_signature = "$cls(*args , **kwargs)" )]
 // #[display(fmt = "")]
 pub struct Model {}
@@ -54,10 +61,3 @@ impl Model {
 }
 
 
-// #[pymodule]
-// #[pyo3(name = "neuaral")]
-// pub fn neuralmodule(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
-//     add_class!(m, Neuaral);
-
-//     Ok(())
-// }

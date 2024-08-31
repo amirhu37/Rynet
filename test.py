@@ -1,10 +1,10 @@
 import os
-
 import numpy as np
-
-import rnet.nn as rn
-# import rnet.nn as rn
 from tools import relu
+
+
+# from rnet import nn as rn
+import rnet as rn
 
 print(
     rn. __dict__    )

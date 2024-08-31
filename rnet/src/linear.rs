@@ -22,7 +22,7 @@ use pyo3::{
 ///*     dict (bool): Indicates that the class has a dictionary attribute.
 ///*     get_all (bool): Indicates that all attributes are gettable.
 ///*     set_all (bool): Indicates that all attributes are settable.
-// #[derive(FromPyObject)]
+// #[derive(IntoPyObject)]
 #[derive(Debug)]
 #[pyclass(
     module = "nn",
@@ -53,12 +53,12 @@ pub struct Linear {
 
 #[pymethods]
 impl Linear {
-    #[new]
-    #[pyo3( signature = (in_features , out_features, is_bias = true , trainable = true,  *args , **kwargs  ),
-    text_signature = "(in_features , out_features, is_bias = true , trainable = true,  *args , **kwargs  )"
-
+    #[pyo3( 
+        signature = (in_features , out_features, is_bias = true , trainable = true,  *args , **kwargs  ),
+        text_signature = "(in_features : int , out_features : int, is_bias = true , trainable = true,  *args , **kwargs  )"
             )]
-    #[allow(unused_variables)]
+    // #[allow(unused_variables)]
+    #[new]
     pub fn __new__<'py>(
         py: Python,
         in_features: usize,

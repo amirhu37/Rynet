@@ -15,14 +15,14 @@ proc-macro = false
 crate-type = [ "rlib" , "cdylib"]
 path = "src/lib.rs"
 
-[lib.include]
-nn = "src/nn.rs"
+# [lib.include]
+# nn = "src/nn.rs"
 
 
 [dependencies]
 ndarray = "0.15.6"
 rand = "0.8"
-derive_more = { version = "0.99.18", features = ["display", "default"] }
+# derive_more = { version = "0.99.18", features = ["display", "default"] }
 pyo3 = { version = "0.21.0", features = ["extension-module", "auto-initialize"] }
 numpy = { version = "0.21.0" }
 ndarray-linalg = "0.16.0"
