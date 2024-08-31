@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["<NAME> <EMAIL>"]
 description = "Neural Network Library"
-repository = "https://github.com/alexander-krasnov/nn"
+repository = "https://github.com/amirhu37/nn"
 license = "MIT"
 documentation = "https://docs.rs/nn"
 
@@ -14,15 +14,6 @@ name = 'rnet'
 proc-macro = false
 crate-type = [ "rlib" , "cdylib"]
 path = "src/lib.rs"
-include = [ "src/lib.rs" , 
-            "src/layer.rs", 
-            "src/nn.rs", 
-            "src/layer.rs",
-            "src/functions.rs",
-            "layers.pyi",
-            "linear_layer.pyi",
-            "neural_layer.pyi"
-             ]
 
 
 
@@ -34,35 +25,6 @@ pyo3 = { version = "0.21.0", features = ["extension-module", "auto-initialize"] 
 numpy = { version = "0.21.0" }
 ndarray-linalg = "0.16.0"
 
-[tool.maturin]
-# Include additional files
-path = "src/lib.rs"
-include = [ "src/lib.rs" , 
-            "src/layer.rs", 
-            "src/nn.rs", 
-            "src/layer.rs",
-            "src/functions.rs",
-            "layers.pyi",
-            "linear_layer.pyi",
-            "neural_layer.pyi"
-             ]
-# Exclude files
-exclude = []
-# Bindings type
-bindings = "pyo3"
-# Control the platform tag on linux
-# compatibility = "manylinux2014"
-# Don't check for manylinux compliance
-skip-auditwheel = false
-# Python source directory
-python-source = "src"
-# Python packages to include
-python-packages = ["numpy",]
-# Strip the library for minimum file size
-strip = true
-# Source distribution generator,
-# supports cargo (default) and git.
-sdist-generator = "cargo"
 
 
-[build-system]
+

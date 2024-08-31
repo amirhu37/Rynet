@@ -3,7 +3,7 @@ pub mod functions;
 pub mod layer;
 pub mod linear;
 pub mod loss;
-pub mod neuaral;
+pub mod neural;
 pub mod optimizers;
 pub mod tools;
 pub mod tensor;
@@ -12,7 +12,7 @@ pub mod tensor;
 use layer::Layer;
 use linear::Linear;
 use loss::MSELoss;
-use neuaral::Neural;
+use neural::Model;
 use tensor::Tensor;
 
 use ndarray::{ArrayBase, Dim, IxDyn, IxDynImpl, OwnedRepr};
@@ -54,41 +54,40 @@ pub type MultiDim = IxDyn;
 
 #[pymodule]
 #[pyo3(name = "nn")]
-pub fn nn(_py: Python, m: &PyBound<PyModule>) -> PyResult<()>{
-    add_class!(m, Linear, Neural);
-    println!("mm");
+pub fn nn_(_py: Python, m: &PyBound<PyModule>) -> PyResult<()>{
+    add_class!(m, Linear, Model);
     Ok(())
 }
 
 #[pymodule]
 #[pyo3(name = "loss")]
-pub fn loss_fn(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+pub fn loss_(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
     add_class!(m, MSELoss);
 
     Ok(())
 }
 #[pymodule]
 #[pyo3(name = "layer")]
-pub fn layers(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
+pub fn layers_(_py: Python, m: &Bound<PyModule>) -> PyResult<()>{
     add_class!(m, Layer);
 
     Ok(())
 }
 
-
+#[allow(deprecated)]
 #[pymodule]
 #[pyo3(name = "rnet")]
-pub fn rnet(py: Python, m: &Bound<PyModule>) -> PyResult<()> {
-    let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn")?;
-    let layers: PyBound<'_, PyModule> = PyModule::new_bound(py, "layers")?;
-    let loss_fn: PyBound<'_, PyModule> = PyModule::new_bound(py, "loss_fn")?;
+pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
+    let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn_")?;
+    let layers: PyBound<'_, PyModule> = PyModule::new_bound(py, "layers_")?;
+    let loss_: PyBound<'_, PyModule> = PyModule::new_bound(py, "loss_")?;
    
-    m.add_submodule(&nn)?;
-    m.add_submodule(&layers)?;
-    m.add_submodule(&loss_fn)?;
+    module.add_submodule(&nn)?;
+    module.add_submodule(&layers)?;
+    module.add_submodule(&loss_)?;
 
-
-    // add_class!(m,Linear, Neural, Layer, MSELoss ,Tensor);
+    // module. add_class::<Linear>()?;
+    // add_class!(m,Linear, Model, Layer, MSELoss ,Tensor);
     // add functions
     // add_function!(m, softmax, sigmoid, tanh, relu);
 

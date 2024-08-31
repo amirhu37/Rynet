@@ -13,14 +13,14 @@ use pyo3::Bound;
 #[pyclass(module = "nn", unsendable, get_all, set_all, subclass, sequence, dict)]
 // #[pyo3(text_signature = "$cls(*args , **kwargs)" )]
 // #[display(fmt = "")]
-pub struct Neural {}
+pub struct Model {}
 #[pymethods]
-impl Neural {
+impl Model {
     #[new]
     #[pyo3(signature = (*args , **kwargs ) ,)]
     #[allow(unused_variables)]
     pub fn __new__(py: Python, args: &Bound<PyTuple>, kwargs: Option<&Bound<PyDict>>) -> Self {
-        Neural {  } }
+        Model {  } }
 
     fn parameters<'py>(slf: &Bound<Self>, _py: Python<'py>) -> Py<PyDict> {
         let dict = slf

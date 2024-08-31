@@ -2,7 +2,6 @@ import os
 
 import numpy as np
 
-# from rnet import nn as rn
 import rnet as rn
 from tools import relu
 
@@ -10,10 +9,10 @@ print(
     rn. __dict__    )
 
 linear_layer = rn. Linear(in_features=3, out_features=2, is_bias=True)
+print(linear_layer)
 
 
-
-class SimpleNN(rn.Neural):
+class SimpleNN(rn.Model):
     def __init__(self):
         # super(SimpleNN, self).__init__()
         self.fc1 = rn.Linear(3, 12)  
