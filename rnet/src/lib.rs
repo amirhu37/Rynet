@@ -61,7 +61,7 @@ pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
     // add_class!(nn,Linear, Model, Layer, MSELoss ,Tensor);
     // module.add_submodule(&nn)?;
 
-    // register_child_module!(module, "nn" , Linear, Model);
+    register_child_module!(module, "nn" , Linear, Model);
 
     Ok(())
 }
