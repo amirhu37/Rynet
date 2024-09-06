@@ -1,28 +1,36 @@
 import os
 import numpy as np
+import rnet.rnet
 from tools import relu
 
+import rnet
+# from rnet.rnet import rnt
+# import rnet as nn
+# from rnet import rnet
+# from rnet import  nn
+# from rnet.rnet import nn
+# print(
+#     rnet. __dict__    )
 
-# from rnet import nn as rn
-# import rnet.nn 
-# import rnet as rn
-import rnet as rn
-# from rny import nn as rn 
 print(
-    rn. __dict__    )
+    rnet.__dict__    )
 
-# import rnet.nn as rn
 
-linear_layer = rn. Linear(in_features=3, out_features=2, is_bias=True)
+# print(
+#     rnet.Tensor
+# )
+
+
+linear_layer = nn. Linear(in_features=3, out_features=2, is_bias=True)
 print(linear_layer)
 
 
-class SimpleNN(rn.Model):
+class SimpleNN(nn.Model):
     def __init__(self):
         # super(SimpleNN, self).__init__()
-        self.fc1 = rn.Linear(3, 12)  
-        self.fc2 = rn.Linear(12, 4)
-        self.fc3 = rn.Linear(4, 3) 
+        self.fc1 = nn.Linear(3, 12)  
+        self.fc2 = nn.Linear(12, 4)
+        self.fc3 = nn.Linear(4, 3) 
         pass
 
     def forward(self, x : np.ndarray):
@@ -59,10 +67,10 @@ y_c = np.eye(20,3)[y]
 # print("TT ",x)
 
 
-linear_layer = rn.Linear(in_features=3, out_features=2, is_bias=True)
+linear_layer = nn.Linear(in_features=3, out_features=2, is_bias=True)
 print("linear_layer",linear_layer.weight)
 
-linear_layer1 = rn.Linear(in_features=3, out_features=2, is_bias=False)
+linear_layer1 = nn.Linear(in_features=3, out_features=2, is_bias=False)
 
 print("linear_layer",linear_layer.weight)
 
@@ -82,14 +90,14 @@ y_hat.0
 
 param = cls.parameters()
 print("param ",param, )
-criterion = MSELoss('mean')
+# criterion = MSELoss('mean')
 
-loss = criterion(y_hat[0] , y_c[0])
-print(loss)
+# loss = criterion(y_hat[0] , y_c[0])
+# print(loss)
 
-for _ in range(10):
-    y_hat = cls(x[0])
-    criterion = MSELoss('mean')
-    loss = criterion(y_hat[0] , y_c[0])
+# for _ in range(10):
+#     y_hat = cls(x[0])
+#     criterion = MSELoss('mean')
+#     loss = criterion(y_hat[0] , y_c[0])
     
-print(loss)
+# print(loss)

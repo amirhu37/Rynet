@@ -41,7 +41,7 @@ pub struct Linear {
 #[pymethods]
 impl Linear {
     #[pyo3( 
-        signature = (in_features , out_features, is_bias = true , trainable = true,  *args , **kwargs  ),
+        signature = (in_features , out_features, is_bias = true , trainable = true  ),
         text_signature = "(in_features : int , out_features : int, is_bias = true , trainable = true,  *args , **kwargs  )"
             )]
     // #[allow(unused_variables)]
@@ -52,8 +52,6 @@ impl Linear {
         out_features: usize,
         is_bias: Option<bool>,
         trainable: Option<bool>,
-        args: &PyBound<'_, PyAny>,
-        kwargs: Option<&PyBound<'_, PyAny>>,
     ) -> PyResult<Self> {
         let is_bias = match is_bias {
             Some(is_bias) => is_bias,

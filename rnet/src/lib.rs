@@ -2,6 +2,7 @@
 pub mod functions;
 pub mod layer;
 pub mod linear;
+// mod nn;
 pub mod loss_functions;
 pub mod model;
 pub mod optimizers;
@@ -9,12 +10,15 @@ pub mod tools;
 pub mod tensor;
 pub mod types;
 
-// use functions::ActiovationFunction;
-use layer::Layer;
 use linear::Linear;
-use loss_functions::MSELoss;
 use model::Model;
-use prelude::PyModuleMethods;
+// use functions::ActiovationFunction;
+// use layer::Layer;
+// use crate::nn::linear::Linear;
+// use crate::nn::model::Model;
+// use loss_functions::MSELoss;
+// use model::Model;
+// use prelude::PyModuleMethods;
 use tensor::Tensor;
 
 use ndarray::{ArrayBase, Dim, IxDyn, IxDynImpl, OwnedRepr};
@@ -51,21 +55,21 @@ pub type PyNdArray<'py, Type, Dimension> = PyBound<'py, PyArray<Type, Dimension>
 pub type MultiDim = IxDyn;
 
 
-
-
-
+// #[pymodule]
+// #[pyo3(name = "nn")]
+// pub fn nn_(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
+//     add_class!(module,Linear, Model);
+//     Ok(())
+// }
 
 #[pymodule]
 #[pyo3(name = "rnet")]
-pub fn moduling(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
-    // let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn")?;
-    // add_class!(nn, Linear, Model, Layer, MSELoss ,Tensor);
-    // module.add_submodule(&nn)?;
+pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
+    add_class!(module, Tensor);
+
     let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn")?;
-    add_class!(module,Linear, Model, Layer, MSELoss ,Tensor);
+    add_class!(nn,Linear, Model);
     module.add_submodule(&nn)?;
-    
-    // register_child_module!(module, "nn" , Linear, Model);
 
     Ok(())
 }
