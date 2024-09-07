@@ -2,7 +2,7 @@
 pub mod functions;
 pub mod layer;
 pub mod linear;
-// mod nn;
+pub mod nn;
 pub mod loss_functions;
 pub mod model;
 pub mod optimizers;
@@ -10,12 +10,12 @@ pub mod tools;
 pub mod tensor;
 pub mod types;
 
-use linear::Linear;
-use model::Model;
+// use linear::Linear;
+// use model::Model;
 // use functions::ActiovationFunction;
 // use layer::Layer;
-// use crate::nn::linear::Linear;
-// use crate::nn::model::Model;
+use crate::nn::linear::Linear;
+use crate::nn::model::Model;
 // use loss_functions::MSELoss;
 // use model::Model;
 // use prelude::PyModuleMethods;
@@ -55,12 +55,12 @@ pub type PyNdArray<'py, Type, Dimension> = PyBound<'py, PyArray<Type, Dimension>
 pub type MultiDim = IxDyn;
 
 
-// #[pymodule]
-// #[pyo3(name = "nn")]
-// pub fn nn_(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
-//     add_class!(module,Linear, Model);
-//     Ok(())
-// }
+#[pymodule]
+#[pyo3(name = "nn")]
+pub fn nn_(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
+    add_class!(module,Linear, Model);
+    Ok(())
+}
 
 #[pymodule]
 #[pyo3(name = "rnet")]

@@ -15,8 +15,8 @@ proc-macro = false
 crate-type = [  "cdylib"]
 path = "src/lib.rs"
 
-# [lib.include]
-# nn = "src/nn.rs"
+[lib.include]
+nn = "src/nn"
 
 
 [dependencies]
@@ -27,7 +27,7 @@ numpy = "0.21.0"
 ndarray-linalg = "0.16.0"
 
 [dependencies.pyo3]
-version = ">=0.21.0"
+version = "0.21.0"
 features = ["auto-initialize", "extension-module"]
 
 

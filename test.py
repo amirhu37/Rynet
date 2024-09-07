@@ -1,19 +1,22 @@
 import os
 import numpy as np
-import rnet.rnet
+# import rnet.rnet
 from tools import relu
 
 import rnet
+# from rnet import rnet
+from rnet import nn
+# import rnet.nn as nn
 # from rnet.rnet import rnt
 # import rnet as nn
 # from rnet import rnet
 # from rnet import  nn
-# from rnet.rnet import nn
+# from rnet.nn import nn
 # print(
 #     rnet. __dict__    )
 
 print(
-    rnet.__dict__    )
+    rnet.nn.__dict__    )
 
 
 # print(
