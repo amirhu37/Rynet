@@ -15,8 +15,8 @@ proc-macro = false
 crate-type = [  "cdylib"]
 path = "src/lib.rs"
 
-[lib.include]
-nn = "src/nn"
+[package.metadata.maturin]
+include = ["**/*.pyi"]
 
 
 [dependencies]

@@ -14,8 +14,8 @@ pub mod types;
 // use model::Model;
 // use functions::ActiovationFunction;
 // use layer::Layer;
-use crate::nn::linear::Linear;
-use crate::nn::model::Model;
+// use crate::nn::linear::Linear;
+// use crate::nn::model::Model;
 // use loss_functions::MSELoss;
 // use model::Model;
 // use prelude::PyModuleMethods;
@@ -23,9 +23,9 @@ use tensor::Tensor;
 
 use ndarray::{ArrayBase, Dim, IxDyn, IxDynImpl, OwnedRepr};
 use numpy::{PyArray, PyArrayDyn};
-#[allow(unused_imports)]
+
 use pyo3::Bound as PyBound;
-use pyo3::*;
+// use pyo3::*;
 use pyo3::{
     pymodule,
     types::PyModule,
@@ -55,20 +55,16 @@ pub type PyNdArray<'py, Type, Dimension> = PyBound<'py, PyArray<Type, Dimension>
 pub type MultiDim = IxDyn;
 
 
-#[pymodule]
-#[pyo3(name = "nn")]
-pub fn nn_(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
-    add_class!(module,Linear, Model);
-    Ok(())
-}
+
 
 #[pymodule]
 #[pyo3(name = "rnet")]
 pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
     add_class!(module, Tensor);
+    let nn: PyBound<'_, PyModule> = PyModule ::new_bound(py, "nn")?;
+    let _ = nn::register( &nn)?;
 
-    let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn")?;
-    add_class!(nn,Linear, Model);
+    // add_class!(nn,Linear, Model);
     module.add_submodule(&nn)?;
 
     Ok(())
