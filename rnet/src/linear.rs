@@ -130,9 +130,22 @@ impl Linear {
     }
 
     fn __repr__(slf: &PyBound<Self>) -> PyResult<String> {
-        // This is the equivalent of `self.__class__.__name__` in Python.
-        let class_name = slf.get_type().qualname()?;
-        Ok(format!("{}", class_name))
+
+        let bias_shape = if !slf.borrow().is_bias {
+            0
+        } else {
+            slf.borrow().shape.1
+        };
+        let class_name: String = slf.get_type().qualname().unwrap();
+        let returns = format!(
+            "{}(in_features ={},\n out_features ={},\n is_bias={},\n params={}) ",
+            class_name,
+            slf.borrow().shape.0,
+            slf.borrow().shape.1,
+            slf.borrow().is_bias,
+            slf.borrow().shape.0 * slf.borrow().shape.1 + bias_shape
+        );
+        Ok(returns)
     }
 
 }

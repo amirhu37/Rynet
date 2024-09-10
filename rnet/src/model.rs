@@ -51,7 +51,7 @@ impl Model {
     fn __str__(slf: &Bound<Self>) -> PyResult<String> {
         let class_name: String = slf.get_type().qualname()?;
 
-        Ok(format!("{}", class_name))
+        Ok(format!("{}({})", class_name, slf.getattr("__dict__").unwrap() ))
     }
 
     fn __repr__(slf: &Bound<Self>) -> PyResult<String> {

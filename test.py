@@ -4,10 +4,9 @@ from tools import relu
 
 
 # import rnet
-# from rnet import rnet
-import rynet.rynet as rnet
-from rynet.rynet import nn
-# from rnet.rnet import nn
+from rnet import rnet
+
+from rnet.rnet import nn
 # from rnet import nn
 # import  rnet.nn as nn
 
@@ -33,21 +32,21 @@ linear_layer = nn. Linear(in_features=3, out_features=2, is_bias=True)
 print(linear_layer)
 
 
-# class SimpleNN(nn.Model):
-#     def __init__(self):
-#         # super(SimpleNN, self).__init__()
-#         self.fc1 = nn.Linear(3, 12)  
-#         self.fc2 = nn.Linear(12, 4)
-#         self.fc3 = nn.Linear(4, 3) 
-#         pass
+class SimpleNN(nn.Model):
+    def __init__(self, input_size, hidden_size , output_size):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(input_size, hidden_size)  
+        self.fc2 = nn.Linear(hidden_size, output_size)
+        self.fc3 = nn.Linear(hidden_size, output_size) 
+        pass
 
-#     def forward(self, x : np.ndarray):
-#         # super().forward()
-#         x = relu(self.fc1(x))
-#         x = relu(self.fc2(x))
-#         x = relu(self.fc3(x))
-#         print(x.shape)
-#         return x
+    def forward(self, x : np.ndarray):
+        # super().forward()
+        x = relu(self.fc1(x))
+        x = relu(self.fc2(x))
+        x = relu(self.fc3(x))
+        print(x.shape)
+        return x
     
 
 # # class custom_layer(rn.Layer):
@@ -85,7 +84,8 @@ print(linear_layer)
 # # print("linear_layer 1 ",linear_layer.forward(x))
 # # print("TT: ",linear_layer)
 
-# cls = SimpleNN()
+cls = SimpleNN(1,1,3)
+print(cls)
 # y_hat = cls(x[0])
 
 # print(f"""
