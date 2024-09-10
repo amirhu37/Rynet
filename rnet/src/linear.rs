@@ -1,4 +1,3 @@
-
 use crate::{tools::{random_bias, random_weight}, ArrayAs, Ndarray, OneDim, TwoDim};
 use ndarray::{Array1, ArrayBase, Dim, OwnedRepr};
 use pyo3::Bound as PyBound;
@@ -108,7 +107,9 @@ impl Linear {
         let result = result.add(slf.borrow().bias.to_owned())?;
         Ok(result.to_object(py))
     }
-
+    fn forward(slf : PyBound<Self>, py: Python , value: &PyBound<PyAny>){
+        
+    }
     fn __str__(slf: &PyBound<Self>) -> PyResult<String> {
 
         let bias_shape = if !slf.borrow().is_bias {
@@ -135,4 +136,3 @@ impl Linear {
     }
 
 }
-
