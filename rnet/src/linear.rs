@@ -107,9 +107,9 @@ impl Linear {
         let result = result.add(slf.borrow().bias.to_owned())?;
         Ok(result.to_object(py))
     }
-    fn forward(slf : PyBound<Self>, py: Python , value: &PyBound<PyAny>){
+    // fn forward(slf : PyBound<Self>, py: Python , value: &PyBound<PyAny>){
         
-    }
+    // }
     fn __str__(slf: &PyBound<Self>) -> PyResult<String> {
 
         let bias_shape = if !slf.borrow().is_bias {

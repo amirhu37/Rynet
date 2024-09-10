@@ -10,7 +10,7 @@ documentation = "https://docs.rs/nn"
 
 
 [lib]
-name = 'rnet'
+name = 'rynet'
 proc-macro = false
 crate-type = [  "cdylib"]
 # path = "src/lib.rs"

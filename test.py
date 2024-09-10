@@ -4,8 +4,11 @@ from tools import relu
 
 
 # import rnet
-from rnet.rnet import nn
-# from rnt import nn
+# from rnet import rnet
+import rynet.rynet as rnet
+from rynet.rynet import nn
+# from rnet.rnet import nn
+# from rnet import nn
 # import  rnet.nn as nn
 
 # import  rnet.rnet as rnt
@@ -18,7 +21,7 @@ from rnet.rnet import nn
 #     rnet. __dict__    )
 
 print(
-    nn.__dict__    )
+    rnet.nn.__dict__    )
 
 
 # print(

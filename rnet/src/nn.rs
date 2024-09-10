@@ -1,10 +1,11 @@
-use numpy::PyArrayDyn;
+// use numpy::PyArrayDyn;
 use pyo3::prelude::*;
-use pyo3::types::PyDict;
+// use pyo3::types::PyDict;
 use pyo3::Bound as PyBound;
 use crate::add_class;
 use crate::linear::Linear;
 use crate::model::Model;
+
 
 #[pymodule]
 #[pyo3(name = "nn")]

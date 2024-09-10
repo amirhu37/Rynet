@@ -10,6 +10,8 @@ pub mod tools;
 pub mod tensor;
 pub mod types;
 
+use linear::Linear;
+use model::Model;
 // use linear::Linear;
 // use model::Model;
 // use functions::ActiovationFunction;
@@ -58,30 +60,15 @@ pub type MultiDim = IxDyn;
 
 
 #[pymodule]
-#[pyo3(name = "rnet")]
-pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
+// #[pyo3(name = "nn")]
+pub fn rynet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
     add_class!(module, Tensor);
     let nn: PyBound<'_, PyModule> = PyModule ::new_bound(py, "nn")?;
     let _ = nn::register( &nn)?;
 
-    // add_class!(nn,Linear, Model);
+    add_class!(module,Linear, Model);
     module.add_submodule(&nn)?;
 
     Ok(())
 }
 
-
-
-// #[pyo3(name = "rnet")]
-// pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
-//     // let layers: PyBound<'_, PyModule> = PyModule::new_bound(py, "layers_")?;
-//     // let loss_: PyBound<'_, PyModule> = PyModule::new_bound(py, "loss_")?;
-   
-//     // module.add_submodule(&nn)?;
-//     // module.add_submodule(&layers)?;
-//     // module.add_submodule(&loss_)?;
-
-//     module. add_class::<Linear>()?;
-//     // add_class!(module,Linear, Model, Layer, MSELoss ,Tensor);
-//     // add functions
-//     // add_function!(m, softmax, sigmoid, tanh, relu);
