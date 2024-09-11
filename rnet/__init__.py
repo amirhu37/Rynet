@@ -1,3 +1,3 @@
-from .rnet import *
+from . import *
 
 __all__ = dir()

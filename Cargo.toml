@@ -15,8 +15,8 @@ name = 'rnet'
 crate-type = [  "cdylib"]
 
 
-# [package.metadata.maturin]
-# include = ["**/*.pyi"]
+[package.metadata.maturin]
+include = ["**/*.pyi"]
 
 
 [dependencies]

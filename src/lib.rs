@@ -63,9 +63,9 @@ pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
     add_class!(module, Tensor);
 
     let nn: PyBound<'_, PyModule> = PyModule ::new_bound(py, "nn")?;
-    let _ = nn::register( &nn)?;
+    // let _ = nn::register( &nn)?;
+    add_class!(nn,Linear, Model);
     module.add_submodule(&nn)?;
-    // add_class!(nn,Linear, Model);
 
     Ok(())
 }
