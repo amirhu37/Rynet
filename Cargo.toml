@@ -11,12 +11,12 @@ documentation = "https://docs.rs/nn"
 
 [lib]
 name = 'rnet'
-proc-macro = false
+# proc-macro = false
 crate-type = [  "cdylib"]
 
 
-[package.metadata.maturin]
-include = ["rnet/**/*.pyi"]
+# [package.metadata.maturin]
+# include = ["**/*.pyi"]
 
 
 [dependencies]
