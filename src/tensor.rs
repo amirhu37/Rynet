@@ -1,7 +1,10 @@
+use std::any::{type_name_of_val, Any};
 use std::fmt::{Display, Formatter};
+
 use std::ops::{Add, Mul};
 
-use numpy::{dot_bound, IntoPyArray, ToPyArray};
+use ndarray::{Dim, IxDynImpl};
+use numpy::{array, dot_bound, IntoPyArray, PyArray, ToPyArray};
 use numpy::{npyffi::npy_float, PyArrayDyn};
 use pyo3::prelude::*;
 // use pyo3::Bound as PyBound;
@@ -20,6 +23,34 @@ use crate::{ArrayAs, DynDim};
 
 // // Implement TensorTrait for ArrayAs<npy_float, ThreeDim>
 // impl TensorTrait for ArrayAs<npy_float, ThreeDim> {}
+use pyo3::types::{PyAny, PyInt};
+
+
+
+#[derive(Debug, Clone)]
+enum TensorInput {
+    Int(i64),
+    Float(f32),
+    Long(f64),
+    IntVec(PyObject),
+    FloatVec(PyObject),
+    LongVec(PyObject)
+}
+impl TensorInput {
+    fn extract_value(&self, py : Python)->PyObject{
+        match self {
+
+            TensorInput::Int(x) => x.to_object(py),
+            TensorInput::Float(x) => x.to_object(py) ,
+            TensorInput::Long(x) => x.to_object(py),
+            TensorInput::IntVec(x) => x.to_object(py),
+            TensorInput::FloatVec(x) => x.to_object(py),
+            TensorInput::LongVec(x) => x.to_object(py),
+    }
+}
+}
+
+                    
 
 #[pyclass(
     // module = "layer", 
@@ -29,78 +60,63 @@ use crate::{ArrayAs, DynDim};
     sequence, 
     dict
 )]
-// #[derive(Debug, FromPyObject)]
-// #[derive(FromPyObject)]
+
 pub struct Tensor {
-    #[pyo3(get,)]
-    pub value: Py<PyArrayDyn<npy_float>>, 
-    #[pyo3(get)]
-    pub grad : bool
+    // #[pyo3(get)]
+    input: TensorInput,
 }
-
-
 
 #[pymethods]
 impl Tensor {
-    // New method that creates a Tensor instance
     #[new]
-    pub fn __new__(
-        // py: Python,
-        value: Py<PyArrayDyn<f32>> ,
-        req_grad: Option<bool>,
-    ) -> Self {
-        // let value: &PyArrayDyn<f32> = value.extract::<&PyArrayDyn<npy_float>>().unwrap();
-        // let shape = value.shape()
-        // let value: Py<PyArrayDyn<f32>> = value.extract().unwrap() ;
-        Tensor { 
-            value: value, 
-            // shape : shape,
-            grad: req_grad.unwrap_or(false),
+    fn new(input: &PyAny) -> PyResult<Self> {
+        if let Ok(val) = input.extract::<i64>() {
+            Ok(Tensor {
+                input: TensorInput::Int(val),
+            })
+        } else if let Ok(val) = input.extract::<f32>() {
+            Ok(Tensor {
+                input: TensorInput::Float(val),
+            })
+        }else if let Ok(val) = input.extract::<f64>() {
+            Ok(Tensor {
+                input: TensorInput::Long(val),
+            })
+        } else if let Ok(val) = input.extract::<PyObject>() {
+            Ok(Tensor {
+                input: TensorInput::IntVec(val),
+            })
+        } else if let Ok(val) = input.extract::<PyObject>() {
+            Ok(Tensor {
+                input: TensorInput::FloatVec(val),
+            })
+        }else if let Ok(val) = input.extract::<PyObject>() {
+            Ok(Tensor {
+                input: TensorInput::LongVec(val),
+            })
+        } else {
+            Err(pyo3::exceptions::PyTypeError::new_err(
+                "Input should be an int, float, or a vector of int/float",
+            ))
         }
     }
-
-    pub fn dot(&self, other: &Tensor, py: Python) -> Tensor {
-        let value : &PyArrayDyn<npy_float> = self.value.extract(py).unwrap();
-        let value: ArrayAs<npy_float, DynDim> = value.to_owned_array();
-        let other_value : &PyArrayDyn<npy_float> = other.value.extract(py).unwrap();
-        let other_value: ArrayAs<npy_float, DynDim> = other_value.to_owned_array();
-    
-        // Compute the dot product using `ndarray`'s dot method
-        let result:Bound<PyArrayDyn<npy_float>> = dot_bound( &value.into_pyarray_bound(py),
-         &other_value.into_pyarray_bound(py)).unwrap();
-    
-        // Convert the result back to a PyArray and wrap it in a Py<PyArray>
-        Tensor {
-            value: result.unbind(),
-            grad: self.grad || other.grad,
+    // #[get]
+    fn get_input(&self, py:Python)->PyResult<PyObject>{
+        let input = self.input.clone();
+        match input {
+            TensorInput::Int(val) => Ok(val.to_object(py)),
+            TensorInput::Float(val) => Ok(val.to_object(py)) ,
+            TensorInput::Long(val) => Ok(val.to_object(py)),
+            TensorInput::IntVec(val) => Ok(val.to_object(py)),
+            TensorInput::FloatVec(val) => Ok(val.to_object(py)),
+            TensorInput::LongVec(val) => Ok(val.to_object(py)),
         }
-    }
-    
-
-    // `Add` method
-    pub fn add(&self, other: &Tensor, py : Python) -> Tensor {
-        let value : &PyArrayDyn<npy_float> = self.value.extract(py).unwrap();
-        let value: ArrayAs<npy_float, DynDim> = value.to_owned_array();
-        let other_value : &PyArrayDyn<npy_float> = other.value.extract(py).unwrap();
-        let other_value: ArrayAs<npy_float, DynDim> = other_value.to_owned_array();
-        let result: Py<PyArrayDyn<npy_float>> = value.to_pyarray_bound(py)
-                                        .add(&other_value
-                                            .to_pyarray_bound(py)
-                                        ).unwrap().downcast().unwrap().clone().unbind() ;
-        Tensor::__new__(result, Some(self.grad)) 
-    }
-
-    // Method to transpose the tensor
-    pub fn transpose(&self, py : Python) -> Tensor {
-        let transposed_data : &PyArrayDyn<npy_float> = self.value.extract(py).unwrap()  ;
-        let transposed_data: ArrayAs<npy_float, DynDim> = transposed_data.to_owned_array().reversed_axes();
-        Tensor::__new__(transposed_data.to_pyarray_bound(py).unbind(), Some(self.grad)) 
     }
 
     // String representation
     fn __str__(&self) -> String {
         
-        format!("Tensor({}, grad = {})", self.value , self.grad)
+        format!("Tensor({:?}, {})", self.input, type_name_of_val(&self.input))
     }
 
     // Representation for debugging
@@ -167,18 +183,25 @@ impl Display for Tensor {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result
     {
 
-        write!(f, "({}, grad_bound = {})", self.value, self.grad)
+        write!(f, "({})", self.input)
         }
 }
 
 // imple clone for `Tensor`
 impl Clone for Tensor {
     fn clone(&self) -> Self {
-        let val = self.value.clone();
-        let grad = self.grad.clone();
-        Tensor { value: val, grad: grad }
+        let val = self.input.clone();
+        // let grad = self.grad.clone();
+        Tensor { input: val }
         }
 }
+impl std::fmt::Display for TensorInput {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self)
+        // todo!()
+    }
+}
+
 // impl Into<ArrayBase<OwnedRepr<f32>, Dim<IxDynImpl>>> for Tensor {
 //     fn into(self) -> ArrayBase<OwnedRepr<f32>, Dim<IxDynImpl>> {
 //         // Access the Python GIL
@@ -216,16 +239,41 @@ impl Clone for Tensor {
 impl Mul for Tensor {
     type Output = Tensor;
     fn mul(self, rhs: Self) -> Self::Output {
-        Python::with_gil(|py|{
-            self.dot(&rhs, py)
-        })
-    }
+        // Access the Python GIL
+        Python::with_gil(|py| {
+            // Extract the PyArray as an ndarray ArrayBase or int ot float
+            // check input type
+            let left = self.input.extract_value(py);
+            let right = rhs.input.extract_value(py);
+            // check if both are int or float
+            if type_name_of_val(&left) == "PyInt"  && type_name_of_val(&right) == "PyInt" {
+                let tensor_input = &self.input;
+                let extract_value = tensor_input.extract_value(py);
+                let left: &Bound<'_, PyInt> = extract_value.downcast_bound(py).unwrap().downcast_exact::<PyInt>().unwrap() ;
+                let tensor_input = &rhs.input;
+                let extract_value = tensor_input.extract_value(py);
+                let right: &Bound<'_, PyInt> = extract_value.downcast_bound(py).unwrap().downcast_exact::<PyInt>().unwrap() ;
+                // Perform the multiplication
+                let result = left.mul(right) ;
+                // Create a new Tensor with the result
+                // Tensor::new(TensorInput::Int(result))
+                //  left * right
+                }else if type_name_of_val(&left) == "PyFloat"  && type_name_of_val(&right) == "PyFloat" {todo!()
+                }else{}
+        
+            // let left: &Bound<'_, PyFloat> = self.input.extract_value(py).down
+            // let right: &Bound<'_, PyFloat> = rhs.input.extract_value(py).down
+
+
+           
+    });
+    todo!()}
 }
-impl Add for Tensor {
-    type Output = Tensor;
-    fn add(self, rhs: Self) -> Self::Output {
-        Python::with_gil(|_py|{
-            self.add(rhs)
-            })
-        }
-}
+// impl Add for Tensor {
+//     type Output = Tensor;
+//     fn add(self, rhs: Self) -> Self::Output {
+//         Python::with_gil(|_py|{
+//             self.add(rhs)
+//             })
+//         }
+// }
