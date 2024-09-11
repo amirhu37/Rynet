@@ -61,7 +61,7 @@ pub type MultiDim = IxDyn;
 #[pymodule]
 pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
     add_class!(module, Tensor);
-
+    let _ = module.add("__name__", "Kir");
     let nn: PyBound<'_, PyModule> = PyModule ::new_bound(py, "nn")?;
     // let _ = nn::register( &nn)?;
     add_class!(nn,Linear, Model);
