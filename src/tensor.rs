@@ -1,15 +1,16 @@
-use std::any::{type_name_of_val, Any};
+use core::ffi;
+use std::any::type_name_of_val;
 use std::fmt::{Display, Formatter};
 
-use std::ops::{Add, Mul};
 
-use ndarray::{Dim, IxDynImpl};
+use ndarray::Array0;
 use numpy::npyffi::npy_float;
-use numpy::{array, dot_bound, npyffi, IntoPyArray, IxDyn, PyArray, PyArrayDyn, ToPyArray};
+use numpy::{IntoPyArray, IxDyn, PyArray, PyArrayDyn};
 
-use pyo3::prelude::*;
-use pyo3::Bound as PyBound;
-use crate::{ArrayAs, DynDim};
+use pyo3::exceptions::PyTypeError;
+use pyo3::ffi::PyType_Check;
+use pyo3::{prelude::*, type_object};
+use pyo3::{PyTryInto, Bound as PyBound};
 
 // Define the TensorTrait trait
 // pub trait TensorTrait {
@@ -24,66 +25,73 @@ use crate::{ArrayAs, DynDim};
 
 // // Implement TensorTrait for ArrayAs<npy_float, ThreeDim>
 // impl TensorTrait for ArrayAs<npy_float, ThreeDim> {}
-use pyo3::types::{PyAny, PyFloat, PyInt};
+use pyo3::types::{PyAny, PyFloat, PyList};
 
-
-trait TensorInput<T>{
-
-    fn get_dtype(&self) -> PyResult<T>;
-}
-
-impl TensorInput<f32> for PyAny{
-    fn get_dtype(&self) -> Result<f32, pyo3::PyErr> {
-        self.extract::<f32>()
-        
-    }
-}
-impl TensorInput<i32> for PyAny{
-    fn get_dtype(&self) -> PyResult<i32> {
-        self.extract::<i32>()
-        
-    }
-}
 
 
                     
 
 #[pyclass(
-    // module = "layer", 
     name = "Tensor", 
     unsendable, 
     subclass, 
     sequence, 
+    frozen,
     dict
 )]
 #[derive(Debug)]
 pub struct Tensor {
-    #[pyo3(get)]
-    input: PyObject,
+    // #[pyo3(get)]
+    pub input: PyObject,
 }
 
 #[pymethods]
 impl Tensor {
     #[new]
-    fn new(input: &PyBound<PyAny>, py:Python) -> PyResult<Self> {
+    fn new(input: &PyBound<PyAny>, _py:Python) -> PyResult<Self> {
         let input = input.extract().expect("build came with error");
         Ok(Tensor { input })
     }
 
     // overload `mul`
-    fn __mul__(&self, other: &PyBound<Self>, py:Python) -> PyResult<Self> {
-        let other : Py<PyAny> = other.extract().expect("build came with error");
-        let result: Py<PyAny> = self.input.call_method1(py, "__mul__", (other,))?.extract(py).expect("build came with error");
-        // let res = result.
-        Ok(Tensor{ input: result })
+    // #[]
+    fn __mul__(&self, other: PyObject, py:Python) -> PyResult<PyObject> {
+        let c = other.bind(py).as_gil_ref();
+        let input = self.input.bind(py).as_gil_ref();
+;
+        if c.is_instance_of::<PyFloat>() && input.is_instance_of::<PyList>(){
+            let var = PyErr::new::<PyTypeError,_>(format!("for list multiplication, float is not valid, only `int` is valid",  ));
+            return Err(var);
+
+        }else if c.is_instance_of::<Tensor>(){
+            println!("1 {}",c.get_type());
+            let binding: Result<Self, PyErr> = other.extract(py) ;
+            let other: &Py<PyAny> = &binding?.input;
+            let result: Py<PyAny> = self.input.call_method1(py, "__mul__", (other,))?.extract(py).expect("build came with error");
+            Ok(Tensor::new(result.bind(py), py).unwrap().into_py(py))
+        }else if c.is_instance_of::<PyAny>(){
+            println!("2 {} {}",c.get_type(), c);
+            let bind = other ;
+            let result = self.input.call_method1(py, "__mul__",(bind,)).expect("from here");
+            
+            println!("{}",result);
+            Ok(Tensor::new(result.bind(py), py).unwrap().into_py(py))
+        }else{
+            let var_name = PyErr::new::<PyTypeError, _>
+            (format!("TypeError: unsupported operand type for *:'Tensor' and '{}'" , type_name_of_val(&other)));
+            Err(var_name)
+
+        }
         }
     
     // String representation
-    fn __str__(&self, py:Python) -> String {
+    fn __str__(&self, _py:Python) -> String {
         
         format!("Tensor({})", self.input)
     }
-
+    fn detach(&self) ->PyObject{
+        self.input.clone()
+    }
     // Representation for debugging
     fn __repr__(&self) -> String {
         format!("Tensor")
@@ -122,9 +130,6 @@ impl IntoPyArray for Tensor {
                                             expect("Downcast faild : ");
         output.clone().unbind().extract(py).unwrap()
     }
-    
-
-    
     fn into_pyarray_bound<'py>(self, py: Python<'py>)
         -> Bound<'py, PyArray<Self::Item, Self::Dim>> {
             let output: &Bound<'py, PyArrayDyn<npy_float>> = self.input.
@@ -135,32 +140,6 @@ impl IntoPyArray for Tensor {
     }
 }
 
-// impl Into<PyArrayDyn<npy_float>> for Tensor {
-//     fn into(self, ) -> PyArrayDyn<npy_float> {
-//         let intoo =  
-//         self.value.to_owned();
-//         let to = Python::with_gil(|py|{
-//              intoo.into_pyarray_bound(py).unbind().extract(py).unwrap()
-
-//         });
-//         to
-//     }
-//     // type Into = Bound<Tensor>;
-    
-// }
-
-// impl From<PyArrayDyn<npy_float>> for Tensor{
-//     fn from(value: PyArrayDyn<npy_float>) -> Tensor{
-//         let tensor = Python::with_gil(|py|{
-//             Tensor::__new__(
-//                 &value.into_pyarray_bound(py), Some(false)
-//             )
-
-//         } );tensor
-//         }
-// }
-
-
 
 
 
@@ -170,79 +149,3 @@ impl Display for Tensor {
         write!(f, "({})", self.input)
         }
 }
-
-// imple clone for `Tensor`
-// impl Clone for Tensor {
-//     fn clone(&self) -> Self {
-//         let val = self.input.clone();
-//         // let grad = self.grad.clone();
-//         Tensor { input: val }
-//         }
-        
-//     fn clone_from(&mut self, source: &Self) {
-//         *self = source.clone()
-//             }
-// }
-impl std::fmt::Display for dyn TensorInput<i32> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self)
-        // todo!()
-    }
-}
-
-// impl Into<ArrayBase<OwnedRepr<f32>, Dim<IxDynImpl>>> for Tensor {
-//     fn into(self) -> ArrayBase<OwnedRepr<f32>, Dim<IxDynImpl>> {
-//         // Access the Python GIL
-//         Python::with_gil(|py| {
-//             // Extract the PyArray as an ndarray ArrayBase
-//             let array: &PyArray<f32, Dim<IxDynImpl>> = self.value.extract(py).unwrap() ;
-//             array.to_owned_array()
-//         })
-//     }
-    
-// }
-
-
-// impl Into<ArrayAs<npy_float, OneDim>> for Tensor {
-//     fn into(self, ) -> ArrayAs<npy_float, OneDim> {
-//         let intoo =  
-//         self.value.to_owned();
-//         intoo
-//         }
-//     // type Into = Bound<Tensor>;
-    
-// }
-
-// impl From<ArrayAs<npy_float, OneDim>> for Tensor{
-//     fn from(value: ArrayAs<npy_float, OneDim>) -> Tensor{
-//         let tensor = Python::with_gil(|py|{
-//             Tensor::__new__(
-//                 &value.into_pyarray_bound(py), Some(false)
-//             )
-
-//         } );tensor
-//         }
-// }
-// impl `mul` for `Tensodr`
-// impl Mul for Tensor {
-//     type Output = Tensor;
-//     fn mul(self, rhs: Self) -> Self::Output {
-//         // Access the Python GIL
-//         Python::with_gil(|py| {
-//              * rhs.input
-//         })
-//     }
-// }
-
-           
-//     });
-//     todo!()}
-// }
-// // impl Add for Tensor {
-// //     type Output = Tensor;
-// //     fn add(self, rhs: Self) -> Self::Output {
-// //         Python::with_gil(|_py|{
-// //             self.add(rhs)
-// //             })
-// //         }
-// // }
