@@ -64,17 +64,14 @@ impl Tensor {
             return Err(var);
 
         }else if c.is_instance_of::<Tensor>(){
-            println!("1 {}",c.get_type());
             let binding: Result<Self, PyErr> = other.extract(py) ;
             let other: &Py<PyAny> = &binding?.input;
             let result: Py<PyAny> = self.input.call_method1(py, "__mul__", (other,))?.extract(py).expect("build came with error");
             Ok(Tensor::new(result.bind(py), py).unwrap().into_py(py))
         }else if c.is_instance_of::<PyAny>(){
-            println!("2 {} {}",c.get_type(), c);
             let bind = other ;
             let result = self.input.call_method1(py, "__mul__",(bind,)).expect("from here");
             
-            println!("{}",result);
             Ok(Tensor::new(result.bind(py), py).unwrap().into_py(py))
         }else{
             let var_name = PyErr::new::<PyTypeError, _>
