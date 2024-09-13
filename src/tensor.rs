@@ -1,16 +1,13 @@
-use core::ffi;
 use std::any::type_name_of_val;
 use std::fmt::{Display, Formatter};
 
 
-use ndarray::Array0;
 use numpy::npyffi::npy_float;
 use numpy::{IntoPyArray, IxDyn, PyArray, PyArrayDyn};
 
 use pyo3::exceptions::PyTypeError;
-use pyo3::ffi::PyType_Check;
-use pyo3::{prelude::*, type_object};
-use pyo3::{PyTryInto, Bound as PyBound};
+use pyo3::prelude::*;
+use pyo3::Bound as PyBound;
 
 // Define the TensorTrait trait
 // pub trait TensorTrait {
@@ -58,27 +55,37 @@ impl Tensor {
     fn __mul__(&self, other: PyObject, py:Python) -> PyResult<PyObject> {
         let c = other.bind(py).as_gil_ref();
         let input = self.input.bind(py).as_gil_ref();
-;
-        if c.is_instance_of::<PyFloat>() && input.is_instance_of::<PyList>(){
-            let var = PyErr::new::<PyTypeError,_>(format!("for list multiplication, float is not valid, only `int` is valid",  ));
-            return Err(var);
-
-        }else if c.is_instance_of::<Tensor>(){
-            let binding: Result<Self, PyErr> = other.extract(py) ;
-            let other: &Py<PyAny> = &binding?.input;
-            let result: Py<PyAny> = self.input.call_method1(py, "__mul__", (other,))?.extract(py).expect("build came with error");
-            Ok(Tensor::new(result.bind(py), py).unwrap().into_py(py))
-        }else if c.is_instance_of::<PyAny>(){
-            let bind = other ;
-            let result = self.input.call_method1(py, "__mul__",(bind,)).expect("from here");
-            
-            Ok(Tensor::new(result.bind(py), py).unwrap().into_py(py))
-        }else{
-            let var_name = PyErr::new::<PyTypeError, _>
-            (format!("TypeError: unsupported operand type for *:'Tensor' and '{}'" , type_name_of_val(&other)));
-            Err(var_name)
-
+        match c {
+            c if c.is_instance_of::<PyFloat>() && input.is_instance_of::<PyList>() => {
+                let var = PyErr::new::<PyTypeError, _>(format!(
+                    "for list multiplication, float is not valid, only `int` is valid"
+                ));
+                return Err(var);
+            },
+            c if c.is_instance_of::<Tensor>() => {
+                let binding: Result<Self, PyErr> = other.extract(py);
+                let other: &Py<PyAny> = &binding?.input;
+                let result: Py<PyAny> = self.input.call_method1(py, "__mul__", (other,))?
+                    .extract(py)
+                    .expect("build came with error");
+                Ok(Tensor::new(result.bind(py), py).unwrap().into_py(py))
+            },
+            c if c.is_instance_of::<PyAny>() => {
+                let bind = other;
+                let result = self.input.call_method1(py, "__mul__", (bind,))
+                    .expect("from here");
+                
+                Ok(Tensor::new(result.bind(py), py).unwrap().into_py(py))
+            },
+            _ => {
+                let var_name = PyErr::new::<PyTypeError, _>(format!(
+                    "TypeError: unsupported operand type for *:'Tensor' and '{}'",
+                    type_name_of_val(&other)
+                ));
+                Err(var_name)
+            }
         }
+        
         }
     
     // String representation
