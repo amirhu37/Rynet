@@ -2,16 +2,16 @@
 pub mod functions;
 pub mod layer;
 pub mod linear;
-pub mod nn;
 pub mod loss_functions;
 pub mod model;
+pub mod nn;
 pub mod optimizers;
-pub mod tools;
 pub mod tensor;
+pub mod tools;
 pub mod types;
 
-use linear::Linear;
-use model::Model;
+// use linear::Linear;
+// use model::Model;
 // use linear::Linear;
 // use model::Model;
 // use functions::ActiovationFunction;
@@ -28,12 +28,7 @@ use numpy::{PyArray, PyArrayDyn};
 
 use pyo3::Bound as PyBound;
 // use pyo3::*;
-use pyo3::{
-    pymodule,
-    types::PyModule,
-    Py, PyResult, Python,
-};
-
+use pyo3::{pymodule, types::PyModule, Py, PyResult, Python};
 
 // use rand::Rng;
 pub type DynDim = Dim<IxDynImpl>;
@@ -58,15 +53,25 @@ pub type MultiDim = IxDyn;
 
 
 
+// #[pymodule]
+// #[pyo3(name="rnet")]
+// pub fn rnet(py: Python, module: &PyBound<PyModule>) -> PyResult<()> {
+//     let _ = module.add("__name__", "Kir");
+//     add_class!(module, Linear, Model);
+//     Ok(())
+// }
+
+
+
 #[pymodule]
-pub fn rnet(py: Python, module: &PyBound<PyModule> ) -> PyResult<()> {
+#[pyo3(name="rnet")]
+pub fn rnet(py: Python, module: &PyBound<PyModule>) -> PyResult<()> {
     add_class!(module, Tensor);
     let _ = module.add("__name__", "Kir");
-    let nn: PyBound<'_, PyModule> = PyModule ::new_bound(py, "nn")?;
-    // let _ = nn::register( &nn)?;
-    add_class!(nn,Linear, Model);
+    let nn: PyBound<'_, PyModule> = PyModule::new_bound(py, "nn")?;
+    let _ = nn::register( &nn)?;
+    // add_class!(nn, Linear, Model);
     module.add_submodule(&nn)?;
 
     Ok(())
 }
-

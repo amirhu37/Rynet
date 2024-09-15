@@ -1,13 +1,12 @@
-use crate::{tools::{random_bias, random_weight}, ArrayAs, Ndarray, OneDim, TwoDim};
+use crate::{
+    tools::{random_bias, random_weight},
+    ArrayAs, Ndarray, OneDim, TwoDim,
+};
 use ndarray::{Array1, ArrayBase, Dim, OwnedRepr};
 use pyo3::Bound as PyBound;
 
 use numpy::{dot_bound, npyffi::npy_float, IntoPyArray, PyArray1, PyArray2, PyArrayDyn};
-use pyo3::{
-    prelude::*,
-    types::PyDict,
-};
-
+use pyo3::{prelude::*, types::PyDict};
 
 #[derive(Debug)]
 #[pyclass(
@@ -21,10 +20,10 @@ use pyo3::{
 )]
 pub struct Linear {
     /// The weights of the linear layer.
-    #[pyo3(get,set, name="weight")]
+    #[pyo3(get, set, name = "weight")]
     pub weight: Py<PyArray2<npy_float>>,
     /// The bias of the linear layer.
-    #[pyo3(get,set, name="bias")]
+    #[pyo3(get, set, name = "bias")]
     pub bias: Py<PyArray1<npy_float>>,
     /// Indicates whether the layer uses a bias term.
     #[pyo3(get)]
@@ -67,21 +66,20 @@ impl Linear {
             zero_bias
         };
 
-        let result = 
-            Self {
-                weight: random_weight.into_pyarray_bound(py).to_owned().into(),
-                bias: random_bias.into_pyarray_bound(py).to_owned().into(),
-                is_bias,
-                trainable: trainable.unwrap_or(true),
-                shape: (in_features, out_features),
-            };
+        let result = Self {
+            weight: random_weight.into_pyarray_bound(py).to_owned().into(),
+            bias: random_bias.into_pyarray_bound(py).to_owned().into(),
+            is_bias,
+            trainable: trainable.unwrap_or(true),
+            shape: (in_features, out_features),
+        };
         Ok(result)
     }
 
     #[pyo3(text_signature = "($cls )")]
     fn parameters<'py>(slf: &PyBound<Self>, _py: Python<'py>) -> PyResult<Py<PyDict>> {
         // acces dict of the class
-        let  dict = slf
+        let dict = slf
             .getattr("__dict__")
             .unwrap()
             .downcast::<PyDict>()
@@ -108,10 +106,9 @@ impl Linear {
         Ok(result.to_object(py))
     }
     // fn forward(slf : PyBound<Self>, py: Python , value: &PyBound<PyAny>){
-        
+
     // }
     fn __str__(slf: &PyBound<Self>) -> PyResult<String> {
-
         let bias_shape = if !slf.borrow().is_bias {
             0
         } else {
@@ -130,7 +127,6 @@ impl Linear {
     }
 
     fn __repr__(slf: &PyBound<Self>) -> PyResult<String> {
-
         let bias_shape = if !slf.borrow().is_bias {
             0
         } else {
@@ -147,5 +143,4 @@ impl Linear {
         );
         Ok(returns)
     }
-
 }

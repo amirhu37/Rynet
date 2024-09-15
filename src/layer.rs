@@ -1,7 +1,6 @@
 use numpy::PyArrayDyn;
 use pyo3::prelude::*;
 
-
 /// A Python class representing a neural network layer.
 ///
 /// Attributes:
@@ -66,7 +65,6 @@ impl Layer {
         Ok(format!("Layers()"))
     }
 
-
     // #[getter]
     // fn __doc__(&self) -> String {
     //     "
@@ -75,4 +73,3 @@ impl Layer {
     //     .to_string()
     // }
 }
-

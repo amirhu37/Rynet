@@ -1,8 +1,8 @@
+use crate::{ArrayAs, OneDim, TwoDim};
 use ndarray::{Array, Array1};
 use pyo3::prelude::*;
 use pyo3::types::{IntoPyDict, PyDict, PyList};
 use rand::Rng;
-use crate::{ArrayAs, OneDim, TwoDim};
 
 pub fn extract_keys(dict: &PyDict) -> PyResult<Vec<String>> {
     // Use the keys() method to get a PyList of keys
@@ -30,8 +30,6 @@ pub fn extract_values(dict: &PyDict) -> PyResult<&PyList> {
     Ok(values)
 }
 
-
-
 pub fn random_weight(n: usize, m: usize) -> PyResult<ArrayAs<f32, TwoDim>> {
     let mut rng = rand::thread_rng();
     let mut array: ArrayAs<f32, TwoDim> = Array::zeros((n, m));
@@ -44,22 +42,22 @@ pub fn random_weight(n: usize, m: usize) -> PyResult<ArrayAs<f32, TwoDim>> {
     Ok(array)
 }
 
-pub fn stack(weight : ArrayAs<f32, TwoDim>, bias : ArrayAs<f32, OneDim> )->  PyResult<ArrayAs<f32, TwoDim>> {
+pub fn stack(
+    weight: ArrayAs<f32, TwoDim>,
+    bias: ArrayAs<f32, OneDim>,
+) -> PyResult<ArrayAs<f32, TwoDim>> {
     // stack both array into one
-    let mut stacked_array = Array::zeros((weight.shape()[0], weight.shape()[1]
-    + bias.shape()[0]));
+    let mut stacked_array = Array::zeros((weight.shape()[0], weight.shape()[1] + bias.shape()[0]));
     for i in 0..weight.shape()[0] {
         for j in 0..weight.shape()[1] {
             stacked_array[[i, j]] = weight[[i, j]];
-            }
-            for j in 0..bias.shape()[0] {
-                stacked_array[[i, weight.shape()[1] + j]] = bias[[j]];
-                }
         }
-        Ok(stacked_array)
-
+        for j in 0..bias.shape()[0] {
+            stacked_array[[i, weight.shape()[1] + j]] = bias[[j]];
+        }
+    }
+    Ok(stacked_array)
 }
-
 
 pub fn random_bias<'py>(n: usize) -> PyResult<ArrayAs<f32, OneDim>> {
     let mut rng = rand::thread_rng();
@@ -98,7 +96,6 @@ macro_rules! add_function {
         )+
     };
 }
-
 
 #[macro_export]
 macro_rules! register_child_module {
