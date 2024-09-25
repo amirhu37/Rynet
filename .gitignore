@@ -2,7 +2,6 @@
 /networkenv/
 vir-env/
 .github/
-pyproject.toml
 Cargo.lock
 template.py
 src/main.rs
